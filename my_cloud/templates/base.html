@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+
+    <!-- <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{% static 'md_css/monokai.css' %}">
+</head>
+
+<body>
+
+    {% include 'header.html' %}
+    {% block content %}{% endblock content %}
+    {% include 'footer.html' %}
+
+
+    <script src="{% static 'jquery/jquery_3.4.1_jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>
+    <!-- <script src="{% static 'popper/1.15.0_umd_popper.js' %}"></script> -->
+
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'layer/layer.js' %}"></script>
+
+    <!-- <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
+
+    <!-- <link rel="stylesheet" href="D:\Code\VsCode_Py\Django\blog_learn\my_blog\static\md_css\monokai.css"> -->
+    <!-- <script src="{% static 'bootstrap/css/bootstrap.min.css' %}"></script> -->
+</body>
+
+</html>
