@@ -1,12 +1,16 @@
 from django.db import models
 from .forms import UploadFileForm
 
-class Files(models.Model):
+class FileUpload(models.Model):
+    # id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     content = models.TextField()
     # upload_to参数，用来指定上传上来的文件保存到哪里
-    myfile = models.FileField(upload_to="media/%Y%m%d/")
-    
+    file = models.FileField(upload_to="media/%Y%m%d/",verbose_name='文件')
+
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')   # 后台 admin 不会显示
+    update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
+
     # id = models.CharField(max_length=20, default=None, primary_key=True, verbose_name='文件ID')
     # name = models.CharField(max_length=50, default=None, verbose_name='文件名')
     # origin_name = models.CharField(max_length=50, default=None, verbose_name='原始文件名')
@@ -15,8 +19,6 @@ class Files(models.Model):
     # path = models.CharField(max_length=30, default=None, verbose_name='文件路径')
     # size = models.BigIntegerField(default=None, verbose_name='文件大小')
     # md5 = models.CharField(max_length=50, default=None, verbose_name='文件的MD5值')
-    create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')
-    update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
     # objects = models.Manager()
 
 

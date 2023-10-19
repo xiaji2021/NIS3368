@@ -22,14 +22,36 @@
                 </div>
                 <!-- 文章正文 -->
                 <div class="form-group">
-                    <label for="body">文件地址</label>
+                    <label for="body">文件内容</label>
                     <!-- 文本区域 -->
                     <textarea type="text" class="form-control" id="body" name="body" rows="12"></textarea>
                 </div>
+
+                <div style="width: 800px;">
+                    <input type="file" name="file" id="file" multiple class="file" />
+                </div>
+
                 <!-- 提交按钮 -->
                 <button type="submit" class="btn btn-primary">完成</button>
             </form>
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $('#file').fileinput({
+        language: 'zh',     //设置语言
+        dropZoneEnabled: true,      //是否显示拖拽区域
+        dropZoneTitle: "单击以选择文件 或 将文件拖动至这这里\n最大支持 2048 kb 的文件",    //拖拽区域显示文字
+        uploadUrl: 'file/imgSave',  //上传路径
+        allowedFileExtensions: ['jpg', 'png', 'gif', 'jpeg'],   //指定上传文件类型
+        maxFileSize: 0,
+        maxFileSize: 2048,   //上传文件最大值，单位kb
+        uploadAsync: true,  //异步上传
+        maxFileCount: 2    //上传文件最大个数。
+    }).on("fileuploaded", function (event, data) { //异步上传成功后回调
+        console.log(data);		//data为返回的数据
+    });
+</script>
+
 {% endblock content %}

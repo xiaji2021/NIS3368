@@ -4,6 +4,7 @@ from . import views
 app_name = 'myfiles'
 
 urlpatterns = [
-    # 目前还没有urls
-    # path('/hello',views.hello, name='hello' ),
+    # path('', home, name='home'),
+    path('/list',views.file_list, name='file_list' ),
+    path('/upload',views.upload_file, name='upload_file' ),
 ]
