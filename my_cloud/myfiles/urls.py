@@ -11,4 +11,6 @@ urlpatterns = [
     path('detail/<int:id>/',views.file_detail, name='file_detail' ),
     path('delete/<int:id>/',views.file_delete, name='file_delete' ),
     path('update/<int:id>/',views.file_update, name='file_update' ),
+    path('error/',views.error, name='error' ),
+    path('create-folder/',views.create_folder, name='create_folder' ),
 ]

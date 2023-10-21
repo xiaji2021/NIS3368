@@ -1,0 +1,49 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+!错误!
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+
+
+<!-- 文章详情 -->
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center mt-4">
+            <img src="https://static.hdslb.com/error/very_sorry.png">
+        </div>
+
+        <h1 class="col-12 mt-4 mb-4 alert alert-warning text-center display-5">{{ error_message }}</h1>
+        <!-- p-3 bg-danger text-white -->
+
+
+        <!-- <div style="text-align: center; padding: 0 0 40px 0;">
+            <a class="rollback-btn" style="padding: 0 20px; float: none;">返回上一页</a>
+        </div> -->
+
+        <div class="col-12 text-center mt-4">
+            <!-- <a class="btn btn-primary" href="{% url 'myfiles:upload_file' %}">返回上一页</a> -->
+            <input type="button" name="Submit" value="返回上一页" onclick="javascript:window.history.back(-1);" class="btn btn-info">
+        </div>
+
+        <div class="error-split" id="up">
+        </div>
+
+        <!-- <div class="error-manga"><img
+                src="https://i0.hdslb.com/bfs/activity-plat/static/2cf2b9af5d3c5781d611d6e36f405144/XHhqvtddUA.png"><a
+                class="change-img-btn" href="#up">换一张</a><a></a></div> -->
+
+    </div>
+</div>
+
+<!-- 文件路径有问题 -->
+<!-- {% block extra_css %}
+<link rel="stylesheet" type="text/css" href="scripts/error.css">
+{% endblock extra_css %} -->
+
+{% endblock content %}

@@ -1,6 +1,14 @@
 from django.db import models
 # from .forms import FileUploadForm
 
+class Folder(models.Model):
+    name = models.CharField(max_length=255)
+    parent_folder = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name="父文件夹")
+    parent_id = models.CharField(max_length=20, default=None, verbose_name='目录父ID')
+
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')
+    update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
+
 class FileUpload(models.Model):
     # id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
@@ -10,6 +18,8 @@ class FileUpload(models.Model):
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')   # 后台 admin 不会显示
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
+
+    # folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
 
     # id = models.CharField(max_length=20, default=None, primary_key=True, verbose_name='文件ID')
     # name = models.CharField(max_length=50, default=None, verbose_name='文件名')
@@ -21,8 +31,6 @@ class FileUpload(models.Model):
     # md5 = models.CharField(max_length=50, default=None, verbose_name='文件的MD5值')
     # objects = models.Manager()
 
-
-
     class Meta:
     #     db_table = 'files'
     #     indexes = [models.Index(fields=['md5']), models.Index(fields=['create_time']), models.Index(fields=['update_time'])]
@@ -30,3 +38,4 @@ class FileUpload(models.Model):
 
     def __str__(self):
         return self.title
+    

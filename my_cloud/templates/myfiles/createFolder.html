@@ -1,0 +1,21 @@
+{% extends "base.html" %} {% load static %}
+{% block title %} 更新文件 {% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">文件夹名</label>
+
+                    <input type="text" class="form-control" id="name" name="name" value="{{ folder.name }}">
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-4">完成</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
