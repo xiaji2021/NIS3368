@@ -1,0 +1,48 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+文章详情
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+
+<!-- 文章详情 -->
+<div class="container">
+    <div class="row">
+
+        <!-- 标题及作者 -->
+        <h1 class="col-12 mt-4 mb-4 text-primary">{{ file.title }}</h1>
+        <!-- <div class="col-12 alert alert-success">作者：</div> -->
+
+        <div class="col-12 alert alert-success"><strong>标题：</strong>{{ file.title }}
+            <!-- · <a href="#" onclick="confirm_safe_delete()">删除文章</a>
+            · <a href=''>编辑文章</a> -->
+
+            <!-- 新增一个隐藏的表单 -->
+            <!-- <form style="display:none;" id="safe_delete" action=""
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form> -->
+        </div>
+        <!-- 文章正文 -->
+        <div class="col-12">
+            <div class="alert alert-info">
+                <strong>文件描述：</strong> {{ file.content }}
+            </div>
+        </div>
+        <!-- 文件名 -->
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <strong>文件名：</strong> {{ file.file }}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock content %}

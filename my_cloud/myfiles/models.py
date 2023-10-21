@@ -1,5 +1,5 @@
 from django.db import models
-from .forms import UploadFileForm
+# from .forms import FileUploadForm
 
 class FileUpload(models.Model):
     # id = models.AutoField(primary_key=True)

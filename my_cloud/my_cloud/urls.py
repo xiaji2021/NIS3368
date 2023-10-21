@@ -17,7 +17,10 @@ from django.contrib import admin
 from django.urls import path
 from django.urls import path, include
 
+from myfiles.views import file_list
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('myfiles', include('myfiles.urls', namespace='myfiles')),
+    # path('',file_list, name='file_list' ),
+    path('myfiles/', include('myfiles.urls', namespace='myfiles')),
 ]
