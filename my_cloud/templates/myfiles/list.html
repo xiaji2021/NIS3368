@@ -14,6 +14,27 @@
 <div class="container">
     <div class="row mt-2">
 
+        {% for folder in folders %}
+        {% if folder.parent_folder is None %}
+        <!-- 文章内容 -->
+        <div class="col-4 mb-4">
+            <!-- 卡片容器 -->
+            <div class="card h-100">
+                <!-- 标题 -->
+                <h4 class="card-header">{{ folder.name }}</h4>
+                <!-- 摘要 -->
+                <div class="card-body">
+                    <p class="card-text">父文件夹：{{ folder.parent_folder|slice:'100' }}...</p>
+                </div>
+                <!-- 注脚 -->
+                <div class="card-footer">
+                    <a href="{% url 'myfiles:folder_detail' folder.id %}" class="btn btn-primary">文件夹详情</a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+
         {% for file in files %}
         <!-- 文章内容 -->
         <div class="col-4 mb-4">

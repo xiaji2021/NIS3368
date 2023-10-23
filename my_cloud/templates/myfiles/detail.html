@@ -15,9 +15,9 @@
     <div class="row">
 
         <!-- 标题及作者 -->
-        <h1 class="col-12 mt-4 mb-4 text-primary">{{ file.title }}</h1>
-        <div class="col-12 alert alert-success">作者: default
-            · <a href="#" onclick="confirm_safe_delete()">删除文件</a>
+        <h1 class="col-12 mt-4 mb-4 text-success">{{ file.title }}</h1>
+        <div class="col-12 alert alert-success">
+            <a href="#" onclick="confirm_safe_delete()">删除文件</a>
             · <a href='{% url "myfiles:file_update" file.id %}'>更改文件</a>
 
             <!-- 新增一个隐藏的表单 -->
@@ -29,7 +29,7 @@
         </div>
 
         <div class="col-12">
-            <div class="alert alert-success">
+            <div class="alert alert-primary">
                 <strong>上传时间：</strong> {{ file.create_time }}
                 &emsp;&emsp;&emsp;&emsp; <strong>更新时间：</strong> {{ file.update_time }}
             </div>
@@ -53,6 +53,18 @@
         <div class="col-12">
             <div class="alert alert-warning">
                 <strong>文件名：</strong> {{ file.file }}
+            </div>
+        </div>
+        <!-- 父文件夹 -->
+        <div class="col-12">
+            <div class="alert alert-secondary">
+                {% if file.parent_folder is not None %}
+                <strong>父文件夹：</strong> <a href='{% url "myfiles:folder_detail" file.parent_folder.id %}'>
+                    {{ file.parent_folder }}</a>
+                {% else %}
+                <strong>父文件夹：</strong><a href='{% url "myfiles:file_list" %}'>{{ file.parent_folder }}</a>
+                {% endif %}
+                &emsp;&emsp;&emsp;&emsp; <strong>父文件夹id: </strong> {{ file.parent_folder.id }}
             </div>
         </div>
 

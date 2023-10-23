@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% load static %}
+{% block title %} 更新文件 {% endblock title %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <br>
+            <form method="post" action="." enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="name">文件夹名</label>
+
+                    <input type="text" class="form-control" id="name" name="name" value="{{ folder.name }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="parent_folder">父文件夹</label>
+
+                    <textarea type="text" class="form-control" id="parent_folder" name="parent_folder"
+                        rows="12">{{ folder.parent_folder }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-4">完成</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

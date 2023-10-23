@@ -3,11 +3,20 @@ from django.db import models
 
 class Folder(models.Model):
     name = models.CharField(max_length=255)
-    parent_folder = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name="父文件夹")
-    parent_id = models.CharField(max_length=20, default=None, verbose_name='目录父ID')
+    parent_folder = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name="父文件夹", related_name='child_folders')
+    # parent_id = models.CharField(max_length=20, default=None, null=True, blank=True,verbose_name='父文件夹ID')
+
+    # child_folder = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name="子文件夹", related_name='parent_folders')
+    # child_id = models.CharField(max_length=20, default=None,null=True, blank=True, verbose_name='子父文件夹ID')
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
+
+    class Meta:
+        ordering = ('-update_time',)
+
+    def __str__(self):
+        return self.name
 
 class FileUpload(models.Model):
     # id = models.AutoField(primary_key=True)
@@ -19,7 +28,7 @@ class FileUpload(models.Model):
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')   # 后台 admin 不会显示
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
 
-    # folder = models.ForeignKey(Folder, on_delete=models.CASCADE)
+    parent_folder = models.ForeignKey(Folder, null=True, blank=True, on_delete=models.CASCADE, verbose_name = '父文件夹')
 
     # id = models.CharField(max_length=20, default=None, primary_key=True, verbose_name='文件ID')
     # name = models.CharField(max_length=50, default=None, verbose_name='文件名')

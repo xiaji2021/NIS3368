@@ -2,23 +2,36 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import FileUploadForm, FolderForm
 from .models import FileUpload, Folder
+from django.db.models import Q  
 
 def hello(request):
     return HttpResponse("Hello World!")
 
-def upload_file(request):
+def upload_file(request, id=None):
     
     if request.method == "POST":
         file_upload_form = FileUploadForm(request.POST, request.FILES)
     
         if file_upload_form.is_valid():
-            # handle_uploaded_file(request.FILES["file"])
-    
-            # myfile = FileUpload(title=title, content=content, file=file)
-            # myfile.save()
-            file_upload_form.save()
+            new_file = file_upload_form.save(commit=False)
 
-            return redirect("myfiles:file_list")
+            if id is not None:
+                new_file.parent_folder = Folder.objects.get(pk=id)
+
+                if not new_file.parent_folder:
+                        error_message = "指定的父文件夹不存在!"
+                        return render(request, "error/printError.html", {'error_message': error_message})
+                
+                new_file.save()
+                folder = Folder.objects.get(id=id)
+                context = { 'folder':folder }
+                return redirect("myfiles:folder_detail", id=id)
+            
+            else:
+                # new_file.parent_id = 0
+                new_file.parent_folder = None
+                new_file.save()
+                return redirect("myfiles:file_list")       
         
         else:
             error_message = "表单内容有误，请重新填写!"
@@ -43,7 +56,8 @@ def handle_uploaded_file(f):
 
 def file_list(request):
     files = FileUpload.objects.all()
-    context = { 'files': files }    # 字典
+    folders = Folder.objects.all()
+    context = { 'folders': folders, 'files': files }    # 字典
     return render(request, 'myfiles/list.html', context)
 
 def file_detail(request, id):
@@ -55,8 +69,13 @@ def file_detail(request, id):
 def file_delete(request, id):
     if request.method == "POST":
         file = FileUpload.objects.get(id=id)
+        parent = file.parent_folder
         file.delete()
-        return redirect("myfiles:file_list")
+
+        if parent is not None:
+            return redirect("myfiles:folder_detail", id=parent.id)
+        else:
+            return redirect("myfiles:file_list")
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
@@ -93,21 +112,27 @@ def file_update(request, id):
 def error(request):
     return render(request, 'error/printError.html')
 
-def create_folder(request):
+def create_folder(request, id=None):
     if request.method == "POST":
         folder_form = FolderForm(request.POST)
-        parent_id = request.POST.get('parent_id')
     
         if folder_form.is_valid():
             new_folder = folder_form.save(commit=False)
 
-            if parent_id:
-                new_folder.parent_folder = Folder.objects.get(pk=parent_id)
-                new_folder.parent_id = parent_id
-                # error_message = "指定的父文件夹不存在!"
-                # return render(request, "error/printError.html", {'error_message': error_message})
+            if id is not None:
+                new_folder.parent_folder = Folder.objects.get(pk=id)
+                # new_folder.parent_id = id
+
+                same_name_folder = Folder.objects.filter(Q(name=new_folder.name) & Q(parent_folder = new_folder.parent_folder))
+                if same_name_folder:
+                    error_message = "该文件夹已存在"
+                    return render(request, "error/printError.html", {'error_message': error_message})
+
+                if not new_folder.parent_folder:
+                    error_message = "指定的父文件夹不存在!"
+                    return render(request, "error/printError.html", {'error_message': error_message})
             else:
-                new_folder.parent_id = 0
+                # new_folder.parent_id = 0
                 new_folder.parent_folder = None
 
             new_folder.save()
@@ -126,3 +151,58 @@ def create_folder(request):
     else:
         error_message = "非GET, POST请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
+    
+def folder_detail(request, id):
+    folder = Folder.objects.get(id=id)
+    children_folder = Folder.objects.filter(parent_folder_id=folder.id)
+    children_file = FileUpload.objects.filter(parent_folder_id=folder.id)
+
+    context = { 'folder': folder, 'children_folder':children_folder, 'children_file':children_file }
+    return render(request, 'myfiles/folderDetail.html', context)
+
+def folder_delete(request, id):
+    if request.method == "POST":
+        folder = Folder.objects.get(id=id)
+        parent = folder.parent_folder
+
+        folder.delete()
+
+        if parent is not None:
+            return redirect("myfiles:folder_detail", id=parent.id)
+        else:
+            return redirect("myfiles:file_list")
+            
+    else:
+        error_message = "仅允许post请求!"
+        return render(request, "error/printError.html", {'error_message': error_message})
+    
+def folder_update(request, id):
+    folder = Folder.objects.get(id=id)
+
+    if request.method == "POST":
+
+        folder_post_form = FolderForm(request.POST)
+
+        if folder_post_form.is_valid():
+
+            folder.name = request.POST['name']
+            folder.parent_id = request.POST.get('parent_id')
+
+            if folder.parent_id:
+                folder.parent_folder = Folder.objects.get(pk=folder.parent_id)
+            else:
+                folder.parent_folder = None
+                folder.parent_id = 0
+            folder.save()
+
+            return redirect("myfiles:folder_detail", id=id)
+
+        else:
+            error_message = "表单内容有误，请重新填写!"
+            return render(request, "error/printError.html", {'error_message': error_message})
+        
+    else:
+        folder_post_form = FolderForm()
+        context = {'folder': folder, 'folder_post_form': folder_post_form}
+
+        return render(request, 'myfiles/folderUpdate.html', context)
