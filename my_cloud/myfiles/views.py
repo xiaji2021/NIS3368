@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404, FileResponse
 from .forms import FileUploadForm, FolderForm
 from .models import FileUpload, Folder
 from django.db.models import Q  
+import os
+# from ..my_cloud.settings import settings
 
 def hello(request):
     return HttpResponse("Hello World!")
@@ -206,3 +208,18 @@ def folder_update(request, id):
         context = {'folder': folder, 'folder_post_form': folder_post_form}
 
         return render(request, 'myfiles/folderUpdate.html', context)
+    
+def file_download(request, id):
+    file = FileUpload.objects.get(id=id)
+
+    # 检查用户是否有权限下载该文件  
+    
+    filename = file.file.name
+    file = open(os.path.join('', filename), 'rb')
+
+    response = FileResponse(file)
+    response['content_type'] = "application/octet-stream"
+    # response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+    # response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s\'\'' % "{filename}"+'download'
+    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(filename)
+    return response

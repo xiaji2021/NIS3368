@@ -16,8 +16,15 @@
                 <div class="form-group">
                     <label for="parent_folder">父文件夹</label>
 
-                    <textarea type="text" class="form-control" id="parent_folder" name="parent_folder"
-                        rows="12">{{ folder.parent_folder }}</textarea>
+                    <!-- <textarea type="text" class="form-control" id="parent_folder" name="parent_folder"
+                        rows="12">{{ folder.parent_folder }}</textarea> -->
+
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {{ folder.parent_folder }}
+                        </a>
+                    </li>
                 </div>
 
                 <button type="submit" class="btn btn-primary mt-4">完成</button>

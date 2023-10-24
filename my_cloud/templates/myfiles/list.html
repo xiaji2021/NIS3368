@@ -36,6 +36,7 @@
         {% endfor %}
 
         {% for file in files %}
+        {% if file.parent_folder is None %}
         <!-- 文章内容 -->
         <div class="col-4 mb-4">
             <!-- 卡片容器 -->
@@ -52,6 +53,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         {% endfor %}
 
     </div>
