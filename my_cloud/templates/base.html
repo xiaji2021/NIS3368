@@ -15,13 +15,32 @@
     <link href="{% static 'bootstrap-fileinput/css/fileinput.css' %}" type="text/css" rel="stylesheet" />
     <script src="{% static 'bootstrap-fileinput/js/fileinput.min.js' %}"></script>
     <script src="{% static 'bootstrap-fileinput/js/locales/zh.js' %}"></script>
-
+        <style>
+        #sidebar-wrapper {
+            background-color: #343a40; /* 深灰色 */
+            color: white;  /* 文字颜色：白色 */
+            min-height: 100vh;
+        }
+        #sidebar-wrapper .list-group-item {
+            background-color: #343a40;
+            color: white;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        #sidebar-wrapper .list-group-item:hover {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
 
     {% include 'header.html' %}
-    {% block content %}{% endblock content %}
+        <div class="d-flex" id="wrapper">
+        {% include 'sidebar.html' %}  <!-- 在这里引入侧边栏 -->
+
+                {% block content %}{% endblock content %}
+
     {% include 'footer.html' %}
 
 
