@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'myfiles',
+    "userprofile",
+    'password_reset',
 ]
 
 MIDDLEWARE = [
@@ -133,3 +135,19 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# SMTP服务器，改为你的邮箱的smtp!
+EMAIL_HOST = 'smtp.qq.com'
+# 改为你自己的邮箱名！
+EMAIL_HOST_USER = '1132717741@qq.com'
+# 你的邮箱密码
+EMAIL_HOST_PASSWORD = 'spgtfrkhutwshfee'
+# 发送邮件的端口
+EMAIL_PORT = 465
+# 是否使用 TLS
+EMAIL_USE_SSL = True
+# 默认的发件人
+DEFAULT_FROM_EMAIL = '1132717741@qq.com'
+
+# 设置站点
+SITE_ID = 2
