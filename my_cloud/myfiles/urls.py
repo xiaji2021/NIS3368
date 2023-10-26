@@ -19,4 +19,6 @@ urlpatterns = [
     path('folder-detail/<int:id>/',views.folder_detail, name='folder_detail' ),
     path('folder-delete/<int:id>/',views.folder_delete, name='folder_delete' ),
     path('folder-update/<int:id>/',views.folder_update, name='folder_update' ),
+
+    path('download/<int:id>/', views.file_download, name='file_download'), 
 ]

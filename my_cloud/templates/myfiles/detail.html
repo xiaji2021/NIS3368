@@ -52,7 +52,7 @@
         <!-- 文件名 -->
         <div class="col-12">
             <div class="alert alert-warning">
-                <strong>文件名：</strong> {{ file.file }}
+                <strong>文件名：</strong> <a href='{% url "myfiles:file_download" file.id %}'>{{ file.file }}</a>
             </div>
         </div>
         <!-- 父文件夹 -->
