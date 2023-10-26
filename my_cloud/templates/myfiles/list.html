@@ -39,31 +39,31 @@
         {% for file in files %}
 
 
-                        <div class="col-sm-4">
+        <div class="col-sm-4">
             <div class="card">
-{#                <img src="{% static 'images/file_icon.png' %}" class="card-img-top" alt="...">#}
+                {# <img src="{% static 'images/file_icon.png' %}" class="card-img-top" alt="...">#}
 
-        {% if file.parent_folder is None %}
-        <!-- 文章内容 -->
-        <div class="col-4 mb-4">
-            <!-- 卡片容器 -->
-            <div class="card h-100">
-                <!-- 标题 -->
-                <h4 class="card-header">{{ file.title }}</h4>
-                <!-- 摘要 -->
-                <div class="card-body">
-                    <h5 class="card-title">{{ file.name }}</h5>
-                    <a href="#" class="btn btn-primary">下载</a>
+                {% if file.parent_folder is None %}
+                <!-- 文章内容 -->
+                <div class="col-4 mb-4">
+                    <!-- 卡片容器 -->
+                    <div class="card h-100">
+                        <!-- 标题 -->
+                        <h4 class="card-header">{{ file.title }}</h4>
+                        <!-- 摘要 -->
+                        <div class="card-body">
+                            <h5 class="card-title">{{ file.name }}</h5>
+                            <a href="#" class="btn btn-primary">下载</a>
+                        </div>
+                    </div>
                 </div>
+
+
+
+
+                {% endif %}
+                {% endfor %}
+
             </div>
         </div>
-
-
-
-
-        {% endif %}
-        {% endfor %}
-
-    </div>
-</div>
-{% endblock content %}
+        {% endblock content %}
