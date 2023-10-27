@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'storages'
+    'storages',
     'myfiles',
 ]
 
@@ -134,7 +134,15 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-HUAWEI_ACCESS_KEY = 'PGWPOKRAIJVY3DGLZIOQ'
-HUAWEI_SECRET_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
-HUAWEI_OBS_ENDPOINT = 'obs.cn-east-3.myhuaweicloud.com'
-HUAWEI_BUCKET_NAME = 'nis3368-dev-01'
+# HUAWEI_ACCESS_KEY = 'PGWPOKRAIJVY3DGLZIOQ'
+# HUAWEI_SECRET_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
+# HUAWEI_OBS_ENDPOINT = 'obs.cn-east-3.myhuaweicloud.com'
+# HUAWEI_BUCKET_NAME = 'nis3368-dev-01'
+
+AWS_ACCESS_KEY_ID = 'PGWPOKRAIJVY3DGLZIOQ'
+AWS_SECRET_ACCESS_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
+AWS_STORAGE_BUCKET_NAME = 'nis3368-dev-01'
+AWS_S3_ENDPOINT_URL = 'https://obs.cn-east-3.myhuaweicloud.com'
+
+# 使用 S3 storage backend
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
