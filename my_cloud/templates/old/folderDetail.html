@@ -1,0 +1,139 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+文件夹详情
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+
+<!-- 文章详情 -->
+<div class="container">
+    <div class="row">
+
+        <!-- 标题及作者 -->
+        <h1 class="col-12 mt-4 mb-4 text-success">{{ folder.name }}</h1>
+        <div class="col-12 alert alert-success">
+            <a href="#" onclick="confirm_safe_delete()">删除文件夹</a>
+            · <a href='{% url "myfiles:folder_update" folder.id %}'>更改文件夹</a>
+            <!-- · <a href='{% url "myfiles:create_child_folder" folder.id %}'>新建子文件夹</a> -->
+            · <a href='#' onclick="create_child_folder()">新建子文件夹</a>
+            · <a href='{% url "myfiles:upload_child_file" folder.id %}'>上传子文件</a>
+
+            <!-- 新增一个隐藏的表单 -->
+            <form style="display:none;" id="folder_delete" action="{% url 'myfiles:folder_delete' folder.id %}"
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+
+            <form style="display:none;" id="create_child_folder"
+                action="{% url 'myfiles:create_child_folder' folder.id %}" method="POST">
+                <input type="hidden" name="child_folder_name" id="child_folder_name" value="">
+                {% csrf_token %}
+
+                <button type="submit">发送</button>
+            </form>
+
+
+        </div>
+
+        <div class="col-12">
+            <div class="alert alert-primary">
+                <strong>上传时间：</strong> {{ folder.create_time }}
+                &emsp;&emsp;&emsp;&emsp; <strong>更新时间：</strong> {{ folder.update_time }}
+            </div>
+
+        </div>
+        <!-- 子文件夹 -->
+        <div class="col-12">
+            <div class="alert alert-info">
+                <strong>子文件夹：</strong>
+                {% for child in children_folder %}
+                &emsp;&emsp;
+                <a href='{% url "myfiles:folder_detail" child.id %}'>{{ child.name }}</a>
+                &emsp;<strong>id: </strong>{{ child.id }}
+                {% endfor %}
+            </div>
+        </div>
+        <!-- 子文件 -->
+        <div class="col-12">
+            <div class="alert alert-info">
+                <strong>子文件：</strong>
+                {% for child in children_file %}
+                <a href='{% url "myfiles:file_detail" child.id %}'>{{ child.title }}</a>
+                &emsp;<strong>id: </strong>{{ child.id }}
+                &emsp;&emsp;
+                {% endfor %}
+            </div>
+        </div>
+        <!-- 父文件夹 -->
+        <div class="col-12">
+            <div class="alert alert-secondary">
+                {% if folder.parent_folder is not None%}
+                <strong>父文件夹：</strong> <a href='{% url "myfiles:folder_detail" folder.parent_folder.id %}'>
+                    {{ folder.parent_folder }}</a>
+                {% else %}
+                <strong>父文件夹：</strong><a href='{% url "myfiles:file_list" %}'>{{ folder.parent_folder }}</a>
+                {% endif %}
+                &emsp;&emsp;&emsp;&emsp; <strong>父文件夹id: </strong> {{ folder.parent_folder.id }}
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<script>
+    // 删除文件
+    function confirm_safe_delete() {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 20px;">确认删除此文件夹吗？文件夹内文件将一并删除</div>',
+            yes: function (index, layero) {
+                $('form#folder_delete button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function create_child_folder() {
+        layer.open({
+            // formType: 0,
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            // area: ['30%', '20%'], //页面百分比
+            area: ['300px', '200px'], //自定义文本域宽高
+            shadeClose: true,
+            btn: ['新建', '取消'],
+            closeBtn: 2,
+
+            title: '请输入子文件夹名',
+            // value: '新建文件夹',
+            // btnAlign: 'c',
+            content: '<div style="text-align: center; padding: 20px;"><input type="text" name="txt_remark" id="remark" rows="1" style="width:200px;" value="新建文件夹"></div>',
+
+            yes: function(index, layero) {
+                // alert(value); //得到value
+                var value = $('#remark').val();
+                // alert('您刚才输入了:' + value);
+                $('form#create_child_folder').val(value);
+                $('form#create_child_folder button').click();
+                layer.close(index);
+            }
+        })
+    }
+</script>
+
+{% endblock content %}

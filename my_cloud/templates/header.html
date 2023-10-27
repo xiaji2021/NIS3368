@@ -1,56 +1,115 @@
 <!-- 定义导航栏 -->
-{#<nav class="navbar navbar-expand-lg navbar-dark bg-dark">#}
-{#    <div class="container">#}
-{##}
-{#        <!-- 导航栏商标 -->#}
-{#        <a class="navbar-brand" href="{% url 'file_list' %}">我的云盘</a>#}
-{##}
-{#        <!-- 导航入口 -->#}
-{#        <div>#}
-{#            <ul class="navbar-nav">#}
-{#                <!-- 条目 -->#}
-{#                <li class="nav-item">#}
-{#                    <a class="nav-link" href="{% url 'myfiles:upload_file' %}">上传文件</a>#}
-{#                </li>#}
-{##}
-{#                <li class="nav-item">#}
-{#                  <a class="nav-link" href="{% url 'myfiles:create_folder' %}">新建文件夹</a>#}
-{#                </li>#}
-{##}
-{#            </ul>#}
-{#        </div>#}
-{##}
-{#    </div>#}
-</nav>
-
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark"> -->
+<!-- <div class="container"> -->
+<!--  -->
+<!-- 导航栏商标 -->
+<!-- <a class="navbar-brand" href="{% url 'file_list' %}">我的云盘</a> -->
+<!--  -->
+<!-- 导航入口 -->
+<!-- <div> -->
+<!-- <ul class="navbar-nav"> -->
+<!-- 条目 -->
+<!-- <li class="nav-item"> -->
+<!-- <a class="nav-link" href="{% url 'myfiles:upload_file' %}">上传文件</a> -->
+<!-- </li> -->
+<!--  -->
+<!-- <li class="nav-item"> -->
+<!-- <a class="nav-link" href="{% url 'myfiles:create_folder' %}">新建文件夹</a> -->
+<!-- </li> -->
+<!--  -->
+<!-- </ul> -->
+<!-- </div> -->
+<!--  -->
+<!-- </div> -->
+<!-- </nav> -->
+{% load static %}
 
 <style>
-.form-control-dark {
-  border-color: var(--bs-gray);
-}
-.form-control-dark:focus {
-  border-color: #fff;
-  box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
-}
-.text-small {
-  font-size: 85%;
-}
-.dropdown-toggle:not(:focus) {
-  outline: 0;
-}
+  .form-control-dark {
+    border-color: var(--bs-gray);
+  }
+
+  .form-control-dark:focus {
+    border-color: #fff;
+    box-shadow: 0 0 0 .25rem rgba(255, 255, 255, .25);
+  }
+
+  .text-small {
+    font-size: 85%;
+  }
+
+  .dropdown-toggle:not(:focus) {
+    outline: 0;
+  }
+
+  .img-responsive {
+    display: block;
+    height: auto;
+    max-width: 10%;
+  }
 </style>
 
-  <div class="container-fluid">
-    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
-      <div class="col-md-auto mb-2 mb-md-0 ">
-        <a href="/" class="d-inline-flex link-body-emphasis text-decoration-none" style="font-size: 30px; ">
-            我的云盘
-{#          <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap"/></svg>#}
+<div class="container-fluid">
+  <header
+    class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+
+    <div class="col-md-3 text-start">
+      <!-- <div class="mb-2 mb-md-0 img-responsive"> -->
+      <!-- <div class="row-md-1"> -->
+      <!-- <div class=" d-flex align-items-left img-responsive">
+        <a href="#" onclick="javascript:window.history.back(-1);"
+          class="d-inline-flex link-body-emphasis text-decoration-none">
+          <img src="{% static 'resource/return_back.png' %}"
+            class="img-fluid d-block mx-auto d-flex align-items-left img-responsive" style="width: 30px;">
         </a>
-      </div>
-      <div class="col-md-3 text-end">
-        <button type="button" class="btn btn-outline-primary me-2" onclick="window.location.href='{% url 'myfiles:upload_file' %}'">上传文件</button>
-        <button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'myfiles:create_folder' %}'">新建文件夹</button>
-      </div>
-    </header>
-  </div>
+      </div> -->
+      <!-- </div> -->
+
+      <!-- <div class="col-md-auto mb-2 mb-md-0 "> -->
+      <!-- <div class="row-md-3"> -->
+      <a href="{% url 'file_list' %}" class="d-inline-flex link-body-emphasis text-decoration-none"
+        style="font-size: 30px; ">
+        <svg t="1698284101698" class="icon" viewBox="0 0 1365 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+          p-id="4705" width="40" height="40">
+          <path
+            d="M1.117091 311.109818a62.060606 62.060606 0 0 1 60.974545-73.69697h1225.231516a62.060606 62.060606 0 0 1 60.974545 73.69697l-126.448485 662.372849a62.060606 62.060606 0 0 1-60.943515 50.424242H188.788364a62.060606 62.060606 0 0 1-60.943516-50.393212L1.117091 311.109818z"
+            fill="#C1D0FF" p-id="4706"></path>
+          <path
+            d="M155.67903 31.030303a31.030303 31.030303 0 0 1 31.030303-31.030303h262.671515a31.030303 31.030303 0 0 1 22.714182 9.867636l124.959031 133.988849a31.030303 31.030303 0 0 0 22.652121 9.867636h528.942545a31.030303 31.030303 0 0 1 31.030303 31.030303V620.606061a31.030303 31.030303 0 0 1-31.030303 31.030303h-961.939394a31.030303 31.030303 0 0 1-31.030303-31.030303V31.030303z"
+            fill="#0F62FE" p-id="4707"></path>
+          <path
+            d="M1.117091 311.109818A62.060606 62.060606 0 0 1 62.091636 237.381818h1225.231516a62.060606 62.060606 0 0 1 60.974545 73.69697l-126.448485 662.403879a62.060606 62.060606 0 0 1-60.943515 50.424242H188.788364a62.060606 62.060606 0 0 1-60.943516-50.393212L1.117091 311.109818z"
+            fill="#E8E8E8" fill-opacity=".1" p-id="4708"></path>
+          <path
+            d="M1287.323152 268.412121a31.030303 31.030303 0 0 1 30.471757 36.83297l-126.417454 662.403879a31.030303 31.030303 0 0 1-30.471758 25.227636H188.788364a31.030303 31.030303 0 0 1-30.471758-25.196606L31.588848 305.276121a31.030303 31.030303 0 0 1 30.502788-36.864h1225.231516z m-1225.231516-31.030303a62.060606 62.060606 0 0 0-60.974545 73.728L127.844848 973.513697a62.060606 62.060606 0 0 0 60.943516 50.393212h972.117333a62.060606 62.060606 0 0 0 60.943515-50.424242l126.448485-662.403879a62.060606 62.060606 0 0 0-60.974545-73.69697H62.091636z"
+            fill="#FFFFFF" fill-opacity=".6" p-id="4709"></path>
+          <path
+            d="M279.800242 512a46.545455 46.545455 0 0 1 46.545455-46.545455h620.606061a46.545455 46.545455 0 0 1 0 93.09091h-620.606061a46.545455 46.545455 0 0 1-46.545455-46.545455z"
+            fill="#FFFFFF" p-id="4710"></path>
+          <path
+            d="M279.800242 760.242424a46.545455 46.545455 0 0 1 46.545455-46.545454h620.606061a46.545455 46.545455 0 0 1 0 93.090909h-620.606061a46.545455 46.545455 0 0 1-46.545455-46.545455z"
+            fill="#FFFFFF" p-id="4711"></path>
+        </svg>
+        我的云盘
+        <!-- {# <svg class="bi" width="40" height="32" role="img" aria-label="Bootstrap">
+          <use xlink:href="#bootstrap" />
+        </svg>#} -->
+      </a>
+    </div>
+
+    <div class="col-md-3 text-end" style="text-align:right">
+      <button type="button" class="btn btn-outline-primary me-2 text-end" onclick="redirectToUpload()">上传文件</button>
+      <button type="button" class="btn btn-primary text-end" onclick="redirectToCreateFolder()">新建文件夹</button>
+    </div>
+  </header>
+</div>
+
+<script>
+  function redirectToUpload() {
+    window.location.href = "{% url 'myfiles:upload_file' %}";
+  }
+
+  function redirectToCreateFolder() {
+    window.location.href = "{% url 'myfiles:create_folder' %}";
+  }  
+</script>

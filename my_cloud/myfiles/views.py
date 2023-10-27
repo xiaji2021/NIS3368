@@ -59,6 +59,10 @@ def handle_uploaded_file(f):
 def file_list(request):
     files = FileUpload.objects.all()
     folders = Folder.objects.all()
+
+    for file in files:
+        file.file_extension = '.' + file.file.name.split('.')[-1]
+
     context = { 'folders': folders, 'files': files }    # 字典
     return render(request, 'myfiles/list.html', context)
 
@@ -66,6 +70,9 @@ def file_detail(request, id):
     file = FileUpload.objects.get(id=id)
 
     context = { 'file': file }
+
+    file.file_extension = '.' + file.file.name.split('.')[-1]
+    
     return render(request, 'myfiles/detail.html', context)
 
 def file_delete(request, id):
@@ -158,6 +165,9 @@ def folder_detail(request, id):
     folder = Folder.objects.get(id=id)
     children_folder = Folder.objects.filter(parent_folder_id=folder.id)
     children_file = FileUpload.objects.filter(parent_folder_id=folder.id)
+
+    for file in children_file:
+        file.file_extension = '.' + file.file.name.split('.')[-1]
 
     context = { 'folder': folder, 'children_folder':children_folder, 'children_file':children_file }
     return render(request, 'myfiles/folderDetail.html', context)

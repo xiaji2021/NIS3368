@@ -1,5 +1,6 @@
 from django.db import models
 # from .forms import FileUploadForm
+from django.core.files.storage import default_storage
 
 class Folder(models.Model):
     name = models.CharField(max_length=255)
@@ -17,13 +18,14 @@ class Folder(models.Model):
 
     def __str__(self):
         return self.name
+    
 
 class FileUpload(models.Model):
     # id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     content = models.TextField()
     # upload_to参数，用来指定上传上来的文件保存到哪里
-    file = models.FileField(upload_to="media/%Y%m%d/")   # verbose_name='文件'
+    file = models.FileField(upload_to="%Y%m%d/")   # verbose_name='文件'
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')   # 后台 admin 不会显示
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
@@ -48,3 +50,24 @@ class FileUpload(models.Model):
     def __str__(self):
         return self.title
     
+    def filesize(self):
+        if self.file:
+            x = self.file.size
+            y = 512000
+            if x < y:
+                value = round(x / 1024, 2)
+                ext = ' KB'
+            elif x < y * 1024:
+                value = round(x / (1024 * 1024), 2)
+                ext = ' MB'
+            else:
+                value = round(x / (1024 * 1024 * 1024), 2)
+                ext = ' GB'
+            return str(value) + ext    
+        return None
+    
+    def filename(self):
+        if self.title:
+            new_name = self.file.name.split('/')[-1]
+            return new_name
+        return None

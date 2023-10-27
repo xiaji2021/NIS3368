@@ -10,86 +10,118 @@
 <!-- 写入 base.html 中定义的 content -->
 {% block content %}
 
-<!-- 文章详情 -->
-<div class="container">
-    <div class="row">
+<div class="container mt-2">
 
-        <!-- 标题及作者 -->
-        <h1 class="col-12 mt-4 mb-4 text-success">{{ folder.name }}</h1>
-        <div class="col-12 alert alert-success">
-            <a href="#" onclick="confirm_safe_delete()">删除文件夹</a>
-            · <a href='{% url "myfiles:folder_update" folder.id %}'>更改文件夹</a>
-            <!-- · <a href='{% url "myfiles:create_child_folder" folder.id %}'>新建子文件夹</a> -->
-            · <a href='#' onclick="create_child_folder()">新建子文件夹</a>
-            · <a href='{% url "myfiles:upload_child_file" folder.id %}'>上传子文件</a>
+    <!-- 本文件夹 -->
+    <div class="row mb-2 rounded">
+        <!-- <div class="col-sm-6 py-2">
+            <a href='#'><strong> . /</strong> </a>
+        </div> -->
 
-            <!-- 新增一个隐藏的表单 -->
-            <form style="display:none;" id="folder_delete" action="{% url 'myfiles:folder_delete' folder.id %}"
+        <div class="col-sm-3 text-left align-self-left text-success" style="font-size: 30px;">{{ folder.name }} </div>
+
+        <div class="col-sm-6 offset-md-3" style="text-align: right;">
+            <a href='#' onclick="create_child_folder()" class="btn btn-primary">新建</a>
+            <a href='{% url "myfiles:upload_child_file" folder.id %}' class="btn btn-primary">上传</a>
+            <a href='#' class="btn btn-primary">重命名</a>
+            <a href="#" class="btn btn-primary">移动</a>
+            <a href="#" onclick="folder_delete('{{folder.name}}')" class="btn btn-danger">删除</a>
+
+        </div>
+    </div>
+
+    <!-- 上边栏 -->
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2 text-left align-self-left"><strong>名称 </strong></div>
+        <div class="col-sm-3 text-left align-self-center"><strong>修改时间 </strong></div>
+        <div class="col-sm-2 text-left align-self-center"><strong>类型 </strong></div>
+        <div class="col-sm-2 text-left align-self-center"><strong>大小 </strong></div>
+    </div>
+
+    <!-- 父文件夹 -->
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-6 py-2">
+            {% if folder.parent_folder is not None%}
+            <!-- <div class="col-sm-3 py-2 text-left align-self-left">名称</div> -->
+            <a href='{% url "myfiles:folder_detail" folder.parent_folder.id %}'><strong> . . /</strong> </a>
+            {% else %}
+            <a href='{% url "myfiles:file_list" %}'><strong> . . /</strong> </a>
+            {% endif %}
+        </div>
+
+        {% if folder.parent_folder is not None%}
+        <div class="col-sm-3 text-left align-self-center">父文件夹：{{ folder.parent_folder }} </div>
+        {% else %}
+        <div class="col-sm-3 text-left align-self-center">全部文件</div>
+        {% endif %}
+    </div>
+
+
+    <!-- 文件夹 -->
+    {% for folder in children_folder %}
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2">
+            <h5><a href="{% url 'myfiles:folder_detail' folder.id %}">{{ folder.name }}</a></h5>
+        </div>
+        <div class="col-sm-3 text-left align-self-center">
+            {{ folder.update_time|date:"Y-m-d H:i" }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            文件夹
+        </div>
+        <div class="col-sm-4 text-end align-self-center" style="text-align:right">
+            <a href="#" class="btn btn-danger" onclick="folder_delete('{{folder.name}}')" id="folder_delete">删除</a>
+        </div>
+
+        <form style="display:none;" id="folder_delete" action="{% url 'myfiles:folder_delete' folder.id %}"
+            method="POST">
+            {% csrf_token %}
+            <button type="submit">发送</button>
+        </form>
+    </div>
+
+    {% endfor %}
+
+    <!-- 文件 -->
+    {% for file in children_file %}
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2">
+            <a href='{% url "myfiles:file_detail" file.id %}'>
+                <h5>{{ file.title }}</h5>
+            </a>
+        </div>
+        <div class="col-sm-3 text-left align-self-center">
+            {{ file.update_time|date:"Y-m-d H:i" }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            {{ file.file_extension }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            {{ file.filesize }}
+        </div>
+        <div class="col-sm-2 text-end align-self-center" style="text-align:right">
+            <a href='#' onclick="file_download('{{file.filename}}')" id="file_download" class="btn btn-success">下载</a>
+            <a href="#" class="btn btn-danger" onclick="file_delete('{{file.filename}}')" id="safe_delete">删除</a>
+
+            <form style="display:none;" id="safe_delete" action="{% url 'myfiles:file_delete' file.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+
+            <form style="display:none;" id="file_download" action="{% url 'myfiles:file_download' file.id %}"
                 method="POST">
                 {% csrf_token %}
                 <button type="submit">发送</button>
             </form>
-
-            <form style="display:none;" id="create_child_folder"
-                action="{% url 'myfiles:create_child_folder' folder.id %}" method="POST">
-                <input type="hidden" name="child_folder_name" id="child_folder_name" value="">
-                {% csrf_token %}
-
-                <button type="submit">发送</button>
-            </form>
-
-
         </div>
-
-        <div class="col-12">
-            <div class="alert alert-primary">
-                <strong>上传时间：</strong> {{ folder.create_time }}
-                &emsp;&emsp;&emsp;&emsp; <strong>更新时间：</strong> {{ folder.update_time }}
-            </div>
-
-        </div>
-        <!-- 子文件夹 -->
-        <div class="col-12">
-            <div class="alert alert-info">
-                <strong>子文件夹：</strong>
-                {% for child in children_folder %}
-                &emsp;&emsp;
-                <a href='{% url "myfiles:folder_detail" child.id %}'>{{ child.name }}</a>
-                &emsp;<strong>id: </strong>{{ child.id }}
-                {% endfor %}
-            </div>
-        </div>
-        <!-- 子文件 -->
-        <div class="col-12">
-            <div class="alert alert-info">
-                <strong>子文件：</strong>
-                {% for child in children_file %}
-                <a href='{% url "myfiles:file_detail" child.id %}'>{{ child.title }}</a>
-                &emsp;<strong>id: </strong>{{ child.id }}
-                &emsp;&emsp;
-                {% endfor %}
-            </div>
-        </div>
-        <!-- 父文件夹 -->
-        <div class="col-12">
-            <div class="alert alert-secondary">
-                {% if folder.parent_folder is not None%}
-                <strong>父文件夹：</strong> <a href='{% url "myfiles:folder_detail" folder.parent_folder.id %}'>
-                    {{ folder.parent_folder }}</a>
-                {% else %}
-                <strong>父文件夹：</strong><a href='{% url "myfiles:file_list" %}'>{{ folder.parent_folder }}</a>
-                {% endif %}
-                &emsp;&emsp;&emsp;&emsp; <strong>父文件夹id: </strong> {{ folder.parent_folder.id }}
-            </div>
-        </div>
-
-
     </div>
+    {% endfor %}
 </div>
+
 
 <script>
     // 删除文件
-    function confirm_safe_delete() {
+    function file_delete(filename) {
         layer.open({
             type: 1,
             skin: 'layui-layer-rim',
@@ -100,9 +132,28 @@
             // offset: 'auto',
 
             title: "确认删除",
-            content: '<div style="text-align: center; padding: 20px;">确认删除此文件夹吗？文件夹内文件将一并删除</div>',
+            content: '<div style="text-align: center; padding: 20px;">确认删除文件<strong>' + filename + '</strong>吗？</div>',
             yes: function (index, layero) {
-                $('form#folder_delete button').click();
+                $('form#safe_delete button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function file_download(filename) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['下载', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认下载",
+            content: '<div style="text-align: center; padding: 20px;">是否下载文件<strong>' + filename + '</strong></div>',
+            yes: function (index, layero) {
+                $('form#file_download button').click();
                 layer.close(index);
             }
         })
@@ -124,7 +175,7 @@
             // btnAlign: 'c',
             content: '<div style="text-align: center; padding: 20px;"><input type="text" name="txt_remark" id="remark" rows="1" style="width:200px;" value="新建文件夹"></div>',
 
-            yes: function(index, layero) {
+            yes: function (index, layero) {
                 // alert(value); //得到value
                 var value = $('#remark').val();
                 // alert('您刚才输入了:' + value);
@@ -134,6 +185,27 @@
             }
         })
     }
+
+    function folder_delete(filename) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 20px;">确认删除文件夹<strong>' + filename + '</strong>吗？文件夹内文件将一并删除</div>',
+            yes: function (index, layero) {
+                $('form#folder_delete button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+
 </script>
 
 {% endblock content %}

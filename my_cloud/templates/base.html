@@ -15,17 +15,21 @@
     <link href="{% static 'bootstrap-fileinput/css/fileinput.css' %}" type="text/css" rel="stylesheet" />
     <script src="{% static 'bootstrap-fileinput/js/fileinput.min.js' %}"></script>
     <script src="{% static 'bootstrap-fileinput/js/locales/zh.js' %}"></script>
-        <style>
+    <style>
         #sidebar-wrapper {
-            background-color: #343a40; /* 深灰色 */
-            color: white;  /* 文字颜色：白色 */
+            background-color: #343a40;
+            /* 深灰色 */
+            color: white;
+            /* 文字颜色：白色 */
             min-height: 100vh;
         }
+
         #sidebar-wrapper .list-group-item {
             background-color: #343a40;
             color: white;
             border-color: rgba(255, 255, 255, 0.1);
         }
+
         #sidebar-wrapper .list-group-item:hover {
             background-color: #007bff;
             color: white;
@@ -36,28 +40,28 @@
 <body>
 
     {% include 'header.html' %}
-        <div class="d-flex" id="wrapper">
-        {% include 'sidebar.html' %}  <!-- 在这里引入侧边栏 -->
+    <div class="d-flex" id="wrapper">
+        {% include 'sidebar.html' %} <!-- 在这里引入侧边栏 -->
 
-                {% block content %}{% endblock content %}
+        {% block content %}{% endblock content %}
 
-    {% include 'footer.html' %}
+        {% include 'footer.html' %}
 
 
-    <script src="{% static 'jquery/jquery_3.4.1_jquery.js' %}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>
-    <!-- <script src="{% static 'popper/1.15.0_umd_popper.js' %}"></script> -->
+        <script src="{% static 'jquery/jquery_3.4.1_jquery.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1-lts/dist/umd/popper.min.js"></script>
+        <!-- <script src="{% static 'popper/1.15.0_umd_popper.js' %}"></script> -->
 
-    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 
-    <script src="{% static 'layer/layer.js' %}"></script>
+        <script src="{% static 'layer/layer.js' %}"></script>
 
-    <!-- <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+        <!-- <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://cdn.staticfile.org/popper.js/1.15.0/umd/popper.min.js"></script>
         <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
 
-    <!-- <link rel="stylesheet" href="D:\Code\VsCode_Py\Django\blog_learn\my_blog\static\md_css\monokai.css"> -->
-    <!-- <script src="{% static 'bootstrap/css/bootstrap.min.css' %}"></script> -->
+        <!-- <link rel="stylesheet" href="D:\Code\VsCode_Py\Django\blog_learn\my_blog\static\md_css\monokai.css"> -->
+        <!-- <script src="{% static 'bootstrap/css/bootstrap.min.css' %}"></script> -->
 </body>
 
 </html>
