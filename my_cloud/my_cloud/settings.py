@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'storages'
     'myfiles',
 ]
 
@@ -133,3 +133,8 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+HUAWEI_ACCESS_KEY = 'PGWPOKRAIJVY3DGLZIOQ'
+HUAWEI_SECRET_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
+HUAWEI_OBS_ENDPOINT = 'obs.cn-east-3.myhuaweicloud.com'
+HUAWEI_BUCKET_NAME = 'nis3368-dev-01'
