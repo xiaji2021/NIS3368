@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'storages',
     'myfiles',
+    "userprofile",
+    'password_reset',
 ]
 
 MIDDLEWARE = [
@@ -134,10 +136,7 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# HUAWEI_ACCESS_KEY = 'PGWPOKRAIJVY3DGLZIOQ'
-# HUAWEI_SECRET_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
-# HUAWEI_OBS_ENDPOINT = 'obs.cn-east-3.myhuaweicloud.com'
-# HUAWEI_BUCKET_NAME = 'nis3368-dev-01'
+
 
 AWS_ACCESS_KEY_ID = 'PGWPOKRAIJVY3DGLZIOQ'
 AWS_SECRET_ACCESS_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
@@ -146,3 +145,19 @@ AWS_S3_ENDPOINT_URL = 'https://obs.cn-east-3.myhuaweicloud.com'
 
 # 使用 S3 storage backend
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+# SMTP服务器，改为你的邮箱的smtp!
+EMAIL_HOST = 'smtp.qq.com'
+# 改为你自己的邮箱名！
+EMAIL_HOST_USER = '1132717741@qq.com'
+# 你的邮箱密码
+EMAIL_HOST_PASSWORD = 'spgtfrkhutwshfee'
+# 发送邮件的端口
+EMAIL_PORT = 465
+# 是否使用 TLS
+EMAIL_USE_SSL = True
+# 默认的发件人
+DEFAULT_FROM_EMAIL = '1132717741@qq.com'
+
+# 设置站点
+SITE_ID = 2

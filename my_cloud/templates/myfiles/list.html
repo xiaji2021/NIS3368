@@ -1,76 +1,3 @@
-{#<!-- extends表明此页面继承自 base.html 文件 -->#}
-{#{% extends "base.html" %}#}
-{#{% load static %}#}
-{##}
-{#<!-- 写入 base.html 中定义的 title -->#}
-{#{% block title %}#}
-{#首页#}
-{#{% endblock title %}#}
-{##}
-{#<!-- 写入 base.html 中定义的 content -->#}
-
-
-{#<!-- 定义放置文章标题的div容器 -->#}
-{#<div class="container">#}
-{#    <div class="row mt-2">#}
-{##}
-{#        {% for folder in folders %}#}
-{#        {% if folder.parent_folder is None %}#}
-{#        <!-- 文章内容 -->#}
-{#        <div class="col-4 mb-4">#}
-{#            <!-- 卡片容器 -->#}
-{#            <div class="card h-100">#}
-{#                <!-- 标题 -->#}
-{#                <h4 class="card-header">{{ folder.name }}</h4>#}
-{#                <!-- 摘要 -->#}
-{#                <div class="card-body">#}
-{#                    <p class="card-text">父文件夹：{{ folder.parent_folder|slice:'100' }}...</p>#}
-{#                </div>#}
-{#                <!-- 注脚 -->#}
-{#                <div class="card-footer">#}
-{#                    <a href="{% url 'myfiles:folder_detail' folder.id %}" class="btn btn-primary">文件夹详情</a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{#        {% endif %}#}
-{##}
-{#        {% endfor %}#}
-{##}
-{#        {% for file in files %}#}
-{##}
-{##}
-{#                        <div class="col-sm-4">#}
-{#            <div class="card">#}
-{#                <img src="{% static 'images/file_icon.png' %}" class="card-img-top" alt="...">#}
-{##}
-{#        {% if file.parent_folder is None %}#}
-{#        <!-- 文章内容 -->#}
-{#        <div class="col-4 mb-4">#}
-{#            <!-- 卡片容器 -->#}
-{#            <div class="card h-100">#}
-{#                <!-- 标题 -->#}
-{#                <h4 class="card-header">{{ file.title }}</h4>#}
-{#                <!-- 摘要 -->#}
-{#                <div class="card-body">#}
-{#                    <h5 class="card-title">{{ file.name }}</h5>#}
-{#                    <a href="#" class="btn btn-primary">下载</a>#}
-{#                </div>#}
-{#            </div>#}
-{#        </div>#}
-{##}
-{##}
-{##}
-{##}
-{#        {% endif %}#}
-{#        {% endfor %}#}
-{##}
-{#    </div>#}
-{#</div>#}
-{#{% endblock content %}#}
-{##}
-{##}
-{##}
-
 {% extends "base.html" %}
 {% load static %}
 
@@ -80,19 +7,36 @@
 
 {% block content %}
 <div class="container mt-2">
+    <!-- 上边栏 -->
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2 text-left align-self-left"><strong>名称 </strong></div>
+        <div class="col-sm-3 text-left align-self-center"><strong>修改时间 </strong></div>
+        <div class="col-sm-2 text-left align-self-center"><strong>类型 </strong></div>
+        <div class="col-sm-2 text-left align-self-center"><strong>大小 </strong></div>
+    </div>
+
     <!-- 遍历所有的文件夹 -->
     {% for folder in folders %}
     {% if folder.parent_folder is None %}
     <div class="row mb-2 border rounded">
-        <div class="col-sm-6 py-2">
+        <div class="col-sm-3 py-2">
             <h5><a href="{% url 'myfiles:folder_detail' folder.id %}">{{ folder.name }}</a></h5>
         </div>
-        <div class="col-sm-3 text-right align-self-center">
-            时间：{{ folder.created_at|date:"Y-m-d H:i" }}
+        <div class="col-sm-3 text-left align-self-center">
+            {{ folder.update_time|date:"Y-m-d H:i" }}
         </div>
-        <div class="col-sm-3 text-right align-self-center">
-            <a href="{% url 'myfiles:folder_delete' folder.id %}" class="btn btn-danger">删除</a>
+        <div class="col-sm-2 text-left align-self-center">
+            文件夹
         </div>
+        <div class="col-sm-4 text-end align-self-center" style="text-align:right">
+            <a href="#" class="btn btn-danger" onclick="folder_delete('{{folder.name}}')" id="folder_delete">删除</a>
+        </div>
+
+        <form style="display:none;" id="folder_delete" action="{% url 'myfiles:folder_delete' folder.id %}"
+            method="POST">
+            {% csrf_token %}
+            <button type="submit">发送</button>
+        </form>
     </div>
     {% endif %}
     {% endfor %}
@@ -101,20 +45,96 @@
     {% for file in files %}
     {% if file.parent_folder is None %}
     <div class="row mb-2 border rounded">
-        <div class="col-sm-6 py-2">
-            <h5>{{ file.title }}</h5>
+        <div class="col-sm-3 py-2">
+            <h5><a href="{% url 'myfiles:file_detail' file.id %}">{{ file.title }}</a></h5>
         </div>
-        <div class="col-sm-3 text-right align-self-center">
-            时间：{{ file.created_at|date:"Y-m-d H:i" }}
+        <div class="col-sm-3 text-left align-self-center">
+            {{ file.update_time|date:"Y-m-d H:i" }}
         </div>
-        <div class="col-sm-3 text-right align-self-center">
-            <a href="#" class="btn btn-primary">下载</a>
-            <a href="{% url 'myfiles:file_delete' file.id %}" class="btn btn-danger">删除</a>
+        <div class="col-sm-2 text-left align-self-center">
+            {{ file.file_extension }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            {{ file.filesize }}
+        </div>
+        <div class="col-sm-2 text-right align-self-center" style="text-align: right;">
+            <a href='#' onclick="file_download('{{file.file.name}}')" id="file_download" class="btn btn-success">下载</a>
+            <a href="#" class="btn btn-danger" onclick="file_delete('{{file.file.name}}')" id="safe_delete">删除</a>
+
+            <form style="display:none;" id="safe_delete" action="{% url 'myfiles:file_delete' file.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+
+            <form style="display:none;" id="file_download" action="{% url 'myfiles:file_download' file.id %}"
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
         </div>
     </div>
     {% endif %}
     {% endfor %}
 </div>
+
+<script>
+    // 删除文件
+    function file_download(filename) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['下载', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认下载",
+            content: '<div style="text-align: center; padding: 20px;">是否下载文件<strong>' + filename + '</strong></div>',
+            yes: function (index, layero) {
+                $('form#file_download button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function file_delete(filename) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 20px;">确认删除文件<strong>' + filename + '</strong>吗？</div>',
+            yes: function (index, layero) {
+                $('form#safe_delete button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function folder_delete(filename) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 20px;">确认删除文件夹<strong>' + filename + '</strong>吗？文件夹内文件将一并删除</div>',
+            yes: function (index, layero) {
+                $('form#folder_delete button').click();
+                layer.close(index);
+            }
+        })
+    }
+</script>
+
 {% endblock content %}
-
-

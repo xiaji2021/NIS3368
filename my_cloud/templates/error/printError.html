@@ -14,11 +14,13 @@
 <!-- 文章详情 -->
 <div class="container">
     <div class="row">
-        <div class="col-12 text-center mt-4">
-            <img src="https://static.hdslb.com/error/very_sorry.png">
+        <div class="col-12 mt-4  text-center">
+            <!-- <img src="https://static.hdslb.com/error/very_sorry.png"> -->
+            <img src="{% static 'resource/dead_link.jpg' %}">
         </div>
 
-        <h1 class="col-12 mt-4 mb-4 alert alert-warning text-center display-5">{{ error_message }}</h1>
+        <h1 class="col-12 mt-4 mb-4 alert alert-warning text-center display-5" style="font-size: 30px;">
+            {{ error_message }}</h1>
         <!-- p-3 bg-danger text-white -->
 
 
@@ -28,7 +30,8 @@
 
         <div class="col-12 text-center mt-4">
             <!-- <a class="btn btn-primary" href="{% url 'myfiles:upload_file' %}">返回上一页</a> -->
-            <input type="button" name="Submit" value="返回上一页" onclick="javascript:window.history.back(-1);" class="btn btn-info">
+            <input type="button" name="Submit" value="返回上一页" onclick="javascript:window.history.back(-1);"
+                class="btn btn-info">
         </div>
 
         <div class="error-split" id="up">
