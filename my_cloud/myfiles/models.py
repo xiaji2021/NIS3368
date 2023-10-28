@@ -33,7 +33,7 @@ class FileUpload(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     # upload_to参数，用来指定上传上来的文件保存到哪里
-    file = models.FileField(upload_to="%Y%m%d/")   # verbose_name='文件'
+    file = models.FileField(upload_to="media/%Y%m%d/")   # verbose_name='文件'
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')   # 后台 admin 不会显示
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')

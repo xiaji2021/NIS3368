@@ -7,6 +7,10 @@ import os
 # from ..my_cloud.settings import settings
 from datetime import datetime, timedelta
 from pathlib import Path
+from django.core.files.storage import default_storage
+
+#避免编码混乱
+from urllib.parse import quote
 
 def hello(request):
     return HttpResponse("Hello World!")
@@ -341,20 +345,39 @@ def folder_update(request, id):
 
         return render(request, 'myfiles/folderUpdate.html', context)
     
-def file_download(request, id):
-    file = FileUpload.objects.get(id=id)
+# def file_download(request, id):
+#     file = FileUpload.objects.get(id=id)
+#
+#     # 检查用户是否有权限下载该文件
+#
+#     filename = file.file.name
+#     file = open(os.path.join('', filename), 'rb')
+#
+#     response = FileResponse(file)
+#     response['content_type'] = "application/octet-stream"
+#     # response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+#     # response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s\'\'' % "{filename}"+'download'
+#     response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(filename)
+#     return response
 
-    # 检查用户是否有权限下载该文件  
-    
-    filename = file.file.name
-    file = open(os.path.join('', filename), 'rb')
+
+# 新的download函数
+
+def file_download(request, id):
+    file_obj = FileUpload.objects.get(id=id)
+
+    # 检查用户是否有权限下载该文件
+
+    filename = file_obj.file.name
+    file = default_storage.open(filename, 'rb')
 
     response = FileResponse(file)
     response['content_type'] = "application/octet-stream"
-    # response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
-    # response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s\'\'' % "{filename}"+'download'
-    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(filename)
+    response['Content-Disposition'] = "attachment; filename*=utf-8''{}".format(quote(filename))
     return response
+
+
+
 
 def recycled_detail(request):
     recycled = Recycled.Recycled
