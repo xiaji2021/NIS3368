@@ -17,7 +17,7 @@
 
     <!-- 遍历所有的文件夹 -->
     {% for folder in folders %}
-    {% if folder.parent_folder is None %}
+    {% if folder.parent_folder is None and folder.parent_id != -1 %}
     <div class="row mb-2 border rounded">
         <div class="col-sm-3 py-2">
             <h5><a href="{% url 'myfiles:folder_detail' folder.id %}">{{ folder.name }}</a></h5>
@@ -29,10 +29,10 @@
             文件夹
         </div>
         <div class="col-sm-4 text-end align-self-center" style="text-align:right">
-            <a href="#" class="btn btn-danger" onclick="folder_delete('{{folder.name}}')" id="folder_delete">删除</a>
+            <a href="#" class="btn btn-danger" onclick="folder_delete('{{folder.name}}','{{forloop.counter}}')" id="folder_delete_{{forloop.counter}}">删除</a>
         </div>
 
-        <form style="display:none;" id="folder_delete" action="{% url 'myfiles:folder_delete' folder.id %}"
+        <form style="display:none;" id="folder_delete_form_{{forloop.counter}}" action="{% url 'myfiles:folder_delete' folder.id %}"
             method="POST">
             {% csrf_token %}
             <button type="submit">发送</button>
@@ -43,7 +43,7 @@
 
     <!-- 遍历所有的文件 -->
     {% for file in files %}
-    {% if file.parent_folder is None %}
+    {% if file.parent_folder is None and file.parent_id != -1 %}
     <div class="row mb-2 border rounded">
         <div class="col-sm-3 py-2">
             <h5><a href="{% url 'myfiles:file_detail' file.id %}">{{ file.title }}</a></h5>
@@ -58,15 +58,15 @@
             {{ file.filesize }}
         </div>
         <div class="col-sm-2 text-right align-self-center" style="text-align: right;">
-            <a href='#' onclick="file_download('{{file.file.name}}')" id="file_download" class="btn btn-success">下载</a>
-            <a href="#" class="btn btn-danger" onclick="file_delete('{{file.file.name}}')" id="safe_delete">删除</a>
+            <a href='#' onclick="file_download('{{file.file.name}}','{{forloop.counter}}')" id="file_download_{{forloop.counter}}" class="btn btn-success">下载</a>
+            <a href="#" class="btn btn-danger" onclick="file_delete('{{file.file.name}}','{{forloop.counter}}')" id="file_delete_{{forloop.counter}}">删除</a>
 
-            <form style="display:none;" id="safe_delete" action="{% url 'myfiles:file_delete' file.id %}" method="POST">
+            <form style="display:none;" id="file_delete_form_{{forloop.counter}}" action="{% url 'myfiles:file_delete' file.id %}" method="POST">
                 {% csrf_token %}
                 <button type="submit">发送</button>
             </form>
 
-            <form style="display:none;" id="file_download" action="{% url 'myfiles:file_download' file.id %}"
+            <form style="display:none;" id="file_download_form_{{forloop.counter}}" action="{% url 'myfiles:file_download' file.id %}"
                 method="POST">
                 {% csrf_token %}
                 <button type="submit">发送</button>
@@ -79,7 +79,7 @@
 
 <script>
     // 删除文件
-    function file_download(filename) {
+    function file_download(filename,counter) {
         layer.open({
             type: 1,
             skin: 'layui-layer-rim',
@@ -90,15 +90,34 @@
             // offset: 'auto',
 
             title: "确认下载",
-            content: '<div style="text-align: center; padding: 20px;">是否下载文件<strong>' + filename + '</strong></div>',
+            content: '<div style="text-align: center; padding: 10px;">是否下载文件<strong>' + filename + '</strong></div>',
             yes: function (index, layero) {
-                $('form#file_download button').click();
+                $('form#file_download_form_'+counter+' button').click();
                 layer.close(index);
             }
         })
     }
 
-    function file_delete(filename) {
+    function file_delete(filename,counter) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2, 
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 10px;">确认删除文件<strong>' + filename + '</strong>吗？</div> <div style="text-align: center;padding: 10px;">放入回收站30天后将自动删除</div>',
+            yes: function (index, layero) {
+                $('form#file_delete_form_'+counter+' button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function folder_delete(filename,counter) {
         layer.open({
             type: 1,
             skin: 'layui-layer-rim',
@@ -109,28 +128,9 @@
             // offset: 'auto',
 
             title: "确认删除",
-            content: '<div style="text-align: center; padding: 20px;">确认删除文件<strong>' + filename + '</strong>吗？</div>',
+            content: '<div style="text-align: center; padding: 10px;">确认删除文件夹<strong>' + filename + '</strong>吗？</div> <div style="text-align: center;padding: 10px;">放入回收站30天后将自动删除</div>',
             yes: function (index, layero) {
-                $('form#safe_delete button').click();
-                layer.close(index);
-            }
-        })
-    }
-
-    function folder_delete(filename) {
-        layer.open({
-            type: 1,
-            skin: 'layui-layer-rim',
-            // area: ['30%', '20%'], //页面百分比
-            shadeClose: true,
-            btn: ['删除', '取消'],
-            closeBtn: 2,
-            // offset: 'auto',
-
-            title: "确认删除",
-            content: '<div style="text-align: center; padding: 20px;">确认删除文件夹<strong>' + filename + '</strong>吗？文件夹内文件将一并删除</div>',
-            yes: function (index, layero) {
-                $('form#folder_delete button').click();
+                $('form#folder_delete_form_'+counter+' button').click();
                 layer.close(index);
             }
         })

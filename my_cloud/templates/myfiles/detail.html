@@ -17,6 +17,7 @@
 
         <div class="col-sm-3 text-left align-self-left text-success " style="font-size: 30px;">{{ file.title }} </div>
 
+        {% if file.parent_id != -1 %}
         <div class="col-sm-6 offset-md-3" style="text-align: right;">
             <a href='#' class="btn btn-primary">重命名</a>
             <a href="#" class="btn btn-primary">移动</a>
@@ -28,6 +29,7 @@
             </form>
 
         </div>
+        {% endif %}
     </div>
 
     <div class="row mb-2 border rounded">
@@ -39,9 +41,11 @@
 
     <div class="row mb-2 border rounded">
         <div class="col-sm-6 py-2">
-            {% if file.parent_folder is not None%}
+            {% if file.parent_folder is not None and file.parent_id != -1%}
             <!-- <div class="col-sm-3 py-2 text-left align-self-left">名称</div> -->
             <a href='{% url "myfiles:folder_detail" file.parent_folder.id %}'><strong> . . /</strong> </a>
+            {% elif file.parent_id == -1 %}
+            <a href='{% url "myfiles:recycled_detail" %}'><strong> . . /</strong> </a>
             {% else %}
             <a href='{% url "myfiles:file_list" %}'><strong> . . /</strong> </a>
             {% endif %}
@@ -106,9 +110,9 @@
             // offset: 'auto',
 
             title: "确认删除",
-            content: '<div style="text-align: center; padding: 20px;">确认删除文件<strong>' + filename + '</strong>吗？</div>',
+            content: '<div style="text-align: center; padding: 10px;">确认删除文件<strong>' + filename + '</strong>吗？</div><div style="text-align: center; padding: 10px;">放入回收站30天后将自动删除</div>',
             yes: function (index, layero) {
-                $('form#safe_delete button').click();
+                $('form#file_delete button').click();
                 layer.close(index);
             }
         })

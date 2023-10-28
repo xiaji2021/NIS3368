@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 
     'myfiles',
     "userprofile",
-    'password_reset',
+    # 'password_reset',
 ]
 
 MIDDLEWARE = [
