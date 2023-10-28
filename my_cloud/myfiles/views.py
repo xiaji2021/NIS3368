@@ -93,29 +93,48 @@ def file_detail(request, id):
     
     return render(request, 'myfiles/detail.html', context)
 
+# def file_delete_old(request, id):
+#     if request.method == "POST":
+#         file = FileUpload.objects.get(id=id)
+#         parent = file.parent_folder
+#
+#         BASE_DIR = Path(__file__).resolve().parent.parent
+#
+#         fname = os.path.join(BASE_DIR, 'media', str(file.file.name))
+#         # MEDIA_URL = '/media/'
+#
+#         # fname = os.path.join(settings.MEDIA_ROOT, str(files)[6:])
+#         if os.path.isfile(fname):
+#             os.remove(fname)
+#
+#         # for i in file:
+#         #     os.remove(dir+'{}'.format(i.name))
+#         file.delete()
+#
+#         return redirect("myfiles:recycled_detail")
+#     else:
+#         error_message = "仅允许post请求!"
+#         return render(request, "error/printError.html", {'error_message': error_message})
+#         # return HttpResponse("仅允许post请求")
+
+
+# 更新删除文件函数
 def file_delete_old(request, id):
     if request.method == "POST":
         file = FileUpload.objects.get(id=id)
         parent = file.parent_folder
 
-        BASE_DIR = Path(__file__).resolve().parent.parent
+        # 直接删除 FileField 对应的文件
+        file.file.delete()
 
-        fname = os.path.join(BASE_DIR, 'media', str(file.file.name))
-        # MEDIA_URL = '/media/'
-
-        # fname = os.path.join(settings.MEDIA_ROOT, str(files)[6:])
-        if os.path.isfile(fname):
-            os.remove(fname)
-
-        # for i in file:
-        #     os.remove(dir+'{}'.format(i.name))
+        # 删除模型实例
         file.delete()
 
         return redirect("myfiles:recycled_detail")
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-        # return HttpResponse("仅允许post请求")
+
 
 def file_delete(request, id):
     if request.method == "POST":
@@ -272,30 +291,60 @@ def folder_delete(request, id):
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
         
+# def folder_delete_old(request, id):
+#     if request.method == "POST":
+#         folder = Folder.objects.get(id=id)
+#         parent = folder.parent_folder
+#
+#         files = FileUpload.objects.filter(parent_id=id)
+#         for file in files:
+#             BASE_DIR = Path(__file__).resolve().parent.parent
+#
+#             fname = os.path.join(BASE_DIR, 'media', str(file.file.name))
+#             if os.path.isfile(fname):
+#                 os.remove(fname)
+#
+#             file.delete()
+#
+#         folder.delete()
+#
+#         return redirect("myfiles:recycled_detail")
+#
+#     else:
+#         error_message = "仅允许post请求!"
+#         return render(request, "error/printError.html", {'error_message': error_message})
+#
+def delete_folder_and_contents(folder):
+    # 删除文件夹中的所有文件
+    files_in_folder = FileUpload.objects.filter(parent_folder=folder)
+    for file_obj in files_in_folder:
+        file_obj.file.delete()
+        file_obj.delete()
+
+    # 删除文件夹中的所有子文件夹
+    subfolders = Folder.objects.filter(parent_folder=folder)
+    for subfolder in subfolders:
+        delete_folder_and_contents(subfolder)  # 递归调用
+
+    # 删除文件夹本身
+    folder.delete()
+
+
 def folder_delete_old(request, id):
     if request.method == "POST":
         folder = Folder.objects.get(id=id)
-        parent = folder.parent_folder
 
-        files = FileUpload.objects.filter(parent_id=id)
-        for file in files:
-            BASE_DIR = Path(__file__).resolve().parent.parent
+        # 检查用户是否有权限删除该文件夹
+        delete_folder_and_contents(folder)
 
-            fname = os.path.join(BASE_DIR, 'media', str(file.file.name))
-            if os.path.isfile(fname):
-                os.remove(fname)
-
-            file.delete()
-
-        folder.delete()
-        
         return redirect("myfiles:recycled_detail")
-            
+
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-    
-def folder_recover(request, id): 
+
+
+def folder_recover(request, id):
     if request.method == "POST":
         folder = Folder.objects.get(id=id)
         parent = folder.parent_folder
