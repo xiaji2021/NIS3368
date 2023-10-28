@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'storages',
     'myfiles',
     "userprofile",
     # 'password_reset',
@@ -135,6 +135,16 @@ MEDIA_URL = '/media/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+AWS_ACCESS_KEY_ID = 'PGWPOKRAIJVY3DGLZIOQ'
+AWS_SECRET_ACCESS_KEY = 'KcOw1EPAJFsdfYMQ4XvNCCbtw2sqVwZBxPCaSn9J'
+AWS_STORAGE_BUCKET_NAME = 'nis3368-dev-01'
+AWS_S3_ENDPOINT_URL = 'https://obs.cn-east-3.myhuaweicloud.com'
+
+# 使用 S3 storage backend
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # SMTP服务器，改为你的邮箱的smtp!
 EMAIL_HOST = 'smtp.qq.com'
