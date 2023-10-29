@@ -28,6 +28,7 @@ urlpatterns = [
     path('myfiles/', include('myfiles.urls', namespace='myfiles')),
     path('userprofile/', include('userprofile.urls', namespace='userprofile')),
     path('password-reset/', include('password_reset.urls')),
+    path('captcha/', include('captcha.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
