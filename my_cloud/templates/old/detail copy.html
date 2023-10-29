@@ -1,0 +1,92 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+文件详情
+{% endblock title %}
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+<!-- 文章详情 -->
+<div class="container">
+    <div class="row">
+
+        <!-- 标题及作者 -->
+        <h1 class="col-12 mt-4 mb-4 text-success">{{ file.title }}</h1>
+        <div class="col-12 alert alert-success">
+            <a href="#" onclick="confirm_safe_delete()">删除文件</a>
+            · <a href='{% url "myfiles:file_update" file.id %}'>更改文件</a>
+
+            <!-- 新增一个隐藏的表单 -->
+            <form style="display:none;" id="safe_delete" action="{% url 'myfiles:file_delete' file.id %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+
+        </div>
+
+        <div class="col-12">
+            <div class="alert alert-primary">
+                <strong>上传时间：</strong> {{ file.create_time }}
+                &emsp;&emsp;&emsp;&emsp; <strong>更新时间：</strong> {{ file.update_time }}
+            </div>
+            <!-- · <a href="#" onclick="confirm_safe_delete()">删除文章</a>
+            · <a href=''>编辑文章</a> -->
+
+            <!-- 新增一个隐藏的表单 -->
+            <!-- <form style="display:none;" id="safe_delete" action=""
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form> -->
+        </div>
+        <!-- 文章正文 -->
+        <div class="col-12">
+            <div class="alert alert-info">
+                <strong>文件描述：</strong> {{ file.content }}
+            </div>
+        </div>
+        <!-- 文件名 -->
+        <div class="col-12">
+            <div class="alert alert-warning">
+                <strong>文件名：</strong> <a href='{% url "myfiles:file_download" file.id %}'>{{ file.file }}</a>
+            </div>
+        </div>
+        <!-- 父文件夹 -->
+        <div class="col-12">
+            <div class="alert alert-secondary">
+                {% if file.parent_folder is not None %}
+                <strong>父文件夹：</strong> <a href='{% url "myfiles:folder_detail" file.parent_folder.id %}'>
+                    {{ file.parent_folder }}</a>
+                {% else %}
+                <strong>父文件夹：</strong><a href='{% url "myfiles:file_list" %}'>{{ file.parent_folder }}</a>
+                {% endif %}
+                &emsp;&emsp;&emsp;&emsp; <strong>父文件夹id: </strong> {{ file.parent_folder.id }}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // 删除文件
+    function confirm_safe_delete() {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 20px;">确认删除此文件吗</div>',
+            yes: function (index, layero) {
+                $('form#safe_delete button').click();
+                layer.close(index);
+            }
+        })
+    }
+</script>
+{% endblock content %}

@@ -1,0 +1,284 @@
+<!-- extends表明此页面继承自 base.html 文件 -->
+{% extends "base.html" %}
+{% load static %}
+
+<!-- 写入 base.html 中定义的 title -->
+{% block title %}
+文件夹详情
+{% endblock title %}
+
+<!-- 写入 base.html 中定义的 content -->
+{% block content %}
+
+<div class="container mt-2">
+
+    <!-- 本文件夹 -->
+    <div class="row mb-2 rounded">
+        <!-- <div class="col-sm-6 py-2">
+            <a href='#'><strong> . /</strong> </a>
+        </div> -->
+
+        <div class="col-sm-3 text-left align-self-left text-success" style="font-size: 30px;">回收站 </div>
+
+        <div class="col-sm-6 offset-md-3" style="text-align: right;">
+            <a href="#" onclick="recycled_recover()" id="recycled_cover" class="btn btn-success">全部还原</a>
+            <a href="#" onclick="recycled_purge()" id="recycled_purge" class="btn btn-danger">清空</a>
+
+            <form style="display:none;" id="recycled_purge" action="{% url 'myfiles:recycled_purge' %}"
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+
+            <form style="display:none;" id="recycled_recover" action="{% url 'myfiles:recycled_recover' %}"
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 上边栏 -->
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2 text-left align-self-left"><strong>名称 </strong></div>
+        <div class="col-sm-3 text-left align-self-center"><strong>自动删除时间 </strong></div>
+        <div class="col-sm-2 text-left align-self-center"><strong>类型 </strong></div>
+        <div class="col-sm-2 text-left align-self-center"><strong>大小 </strong></div>
+    </div>
+
+    <!-- 文件夹 -->
+    {% for folder in children_folder %}
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2">
+            <h5><a href="{% url 'myfiles:folder_detail' folder.id %}">{{ folder.name }}</a></h5>
+        </div>
+        <div class="col-sm-3 text-left align-self-center">
+            {{ folder.delete_time|date:"Y-m-d H:i" }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            文件夹
+        </div>
+        <div class="col-sm-4 text-end align-self-center" style="text-align:right">
+            <a href='#' onclick="folder_recover('{{folder.name}}','{{forloop.counter}}')" id="folder_recover_{{forloop.counter}}" class="btn btn-success">还原</a>
+            <a href="#" class="btn btn-danger" onclick="folder_delete('{{folder.name}}','{{forloop.counter}}')" id="folder_delete_{{forloop.counter}}">删除</a>
+        </div>
+
+        <form style="display:none;" id="folder_delete_form_{{forloop.counter}}" action="{% url 'myfiles:folder_delete_old' folder.id %}"
+            method="POST">
+            {% csrf_token %}
+            <button type="submit">发送</button>
+        </form>
+
+        <form style="display:none;" id="folder_recover_form_{{forloop.counter}}" action="{% url 'myfiles:folder_recover' folder.id %}"
+            method="POST">
+            {% csrf_token %}
+            <button type="submit">发送</button>
+        </form>
+    </div>
+
+    {% endfor %}
+
+    <!-- 文件 -->
+    {% for file in children_file %}
+    <div class="row mb-2 border rounded">
+        <div class="col-sm-3 py-2">
+            <a href='{% url "myfiles:file_detail" file.id %}'>
+                <h5>{{ file.title }}</h5>
+            </a>
+        </div>
+        <div class="col-sm-3 text-left align-self-center">
+            {{ file.delete_time|date:"Y-m-d H:i" }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            {{ file.file_extension }}
+        </div>
+        <div class="col-sm-2 text-left align-self-center">
+            {{ file.filesize }}
+        </div>
+        <div class="col-sm-2 text-end align-self-center" style="text-align:right">
+            <a href='#' onclick="file_recover('{{file.filename}}','{{forloop.counter}}')" id="file_recover_{{forloop.counter}}" class="btn btn-success">还原</a>
+            <a href="#" class="btn btn-danger" onclick="file_delete('{{file.filename}}','{{forloop.counter}}')" id="file_delete_{{forloop.counter}}">删除</a>
+
+            <form style="display:none;" id="file_delete_form_{{forloop.counter}}" action="{% url 'myfiles:file_delete_old' file.id %}"
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+
+            <form style="display:none;" id="file_recover_form_{{forloop.counter}}" action="{% url 'myfiles:file_recover' file.id %}"
+                method="POST">
+                {% csrf_token %}
+                <button type="submit">发送</button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+<script>
+    // 删除文件
+    function file_delete(filename,counter) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 10px;">确认删除文件<strong>' + filename + '</strong>吗？</div><div style="text-align: center; padding: 10px;">删除后将无法找回</div>',
+            yes: function (index, layero) {
+                $('form#file_delete_form_'+counter+' button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function file_download(filename,counter) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['下载', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认下载",
+            content: '<div style="text-align: center; padding: 10px;">是否下载文件<strong>' + filename + '</strong></div>',
+            yes: function (index, layero) {
+                $('form#file_download_form_'+counter+' button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function create_child_folder() {
+        layer.open({
+            // formType: 0,
+            type: 1,
+            skin: 'layui-layer-rim', //加上边框
+            // area: ['30%', '20%'], //页面百分比
+            area: ['300px', '200px'], //自定义文本域宽高
+            shadeClose: true,
+            btn: ['新建', '取消'],
+            closeBtn: 2,
+
+            title: '请输入子文件夹名',
+            // value: '新建文件夹',
+            // btnAlign: 'c',
+            content: '<div style="text-align: center; padding: 10px;"><input type="text" name="txt_remark" id="remark" rows="1" style="width:200px;" value="新建文件夹"></div>',
+
+            yes: function (index, layero) {
+                // alert(value); //得到value
+                var value = $('#remark').val();
+                // alert('您刚才输入了:' + value);
+                $('form#create_child_folder').val(value);
+                $('form#create_child_folder button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function folder_delete(filename,counter) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['删除', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认删除",
+            content: '<div style="text-align: center; padding: 10px;">确认删除文件夹<strong>' + filename + '</strong>吗？</div><div style="text-align: center;padding: 10px; ">文件夹内文件将一并删除</div><div style="text-align: center; padding: 10px;">删除后将无法找回</div>',
+            yes: function (index, layero) {
+                $('form#folder_delete_form_'+counter+' button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function folder_recover(filename,counter) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['还原', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认还原",
+            content: '<div style="text-align: center; padding: 10px;">是否还原文件夹<strong>' + filename + '</strong></div>',
+            yes: function (index, layero) {
+                $('form#folder_recover_form_'+counter+' button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function file_recover(filename,counter) {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['还原', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认还原",
+            content: '<div style="text-align: center; padding: 10px;">是否还原文件<strong>' + filename + '</strong></div>',
+            yes: function (index, layero) {
+                $('form#file_recover_form_'+counter+' button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function recycled_purge() {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['清空', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认清空",
+            content: '<div style="text-align: center; padding: 10px;">是否清空回收站？</div><div style="text-align: center; padding: 10px;">清空后将无法找回</div>',
+            yes: function (index, layero) {
+                $('form#recycled_purge button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+    function recycled_recover() {
+        layer.open({
+            type: 1,
+            skin: 'layui-layer-rim',
+            // area: ['30%', '20%'], //页面百分比
+            shadeClose: true,
+            btn: ['清空', '取消'],
+            closeBtn: 2,
+            // offset: 'auto',
+
+            title: "确认清空",
+            content: '<div style="text-align: center; padding: 10px;">是否还原回收站内全部内容？</div>',
+            yes: function (index, layero) {
+                $('form#recycled_recover button').click();
+                layer.close(index);
+            }
+        })
+    }
+
+
+</script>
+
+{% endblock content %}

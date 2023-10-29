@@ -1,0 +1,72 @@
+{#<!-- extends表明此页面继承自 base.html 文件 -->#}
+{#{% extends "base.html" %}#}
+{#{% load static %}#}
+{##}
+{#<!-- 写入 base.html 中定义的 title -->#}
+{#{% block title %}#}
+{#首页#}
+{#{% endblock title %}#}
+{##}
+{#<!-- 写入 base.html 中定义的 content -->#}
+
+
+{#<!-- 定义放置文章标题的div容器 -->#}
+{#<div class="container">#}
+{#    <div class="row mt-2">#}
+{##}
+{#        {% for folder in folders %}#}
+{#        {% if folder.parent_folder is None %}#}
+{#        <!-- 文章内容 -->#}
+{#        <div class="col-4 mb-4">#}
+{#            <!-- 卡片容器 -->#}
+{#            <div class="card h-100">#}
+{#                <!-- 标题 -->#}
+{#                <h4 class="card-header">{{ folder.name }}</h4>#}
+{#                <!-- 摘要 -->#}
+{#                <div class="card-body">#}
+{#                    <p class="card-text">父文件夹：{{ folder.parent_folder|slice:'100' }}...</p>#}
+{#                </div>#}
+{#                <!-- 注脚 -->#}
+{#                <div class="card-footer">#}
+{#                    <a href="{% url 'myfiles:folder_detail' folder.id %}" class="btn btn-primary">文件夹详情</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        {% endif %}#}
+{##}
+{#        {% endfor %}#}
+{##}
+{#        {% for file in files %}#}
+{##}
+{##}
+{#                        <div class="col-sm-4">#}
+{#            <div class="card">#}
+{#                <img src="{% static 'images/file_icon.png' %}" class="card-img-top" alt="...">#}
+{##}
+{#        {% if file.parent_folder is None %}#}
+{#        <!-- 文章内容 -->#}
+{#        <div class="col-4 mb-4">#}
+{#            <!-- 卡片容器 -->#}
+{#            <div class="card h-100">#}
+{#                <!-- 标题 -->#}
+{#                <h4 class="card-header">{{ file.title }}</h4>#}
+{#                <!-- 摘要 -->#}
+{#                <div class="card-body">#}
+{#                    <h5 class="card-title">{{ file.name }}</h5>#}
+{#                    <a href="#" class="btn btn-primary">下载</a>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{##}
+{##}
+{##}
+{##}
+{#        {% endif %}#}
+{#        {% endfor %}#}
+{##}
+{#    </div>#}
+{#</div>#}
+{#{% endblock content %}#}
+{##}
+{##}
+{##}
