@@ -79,6 +79,7 @@
 {% endblock title %}
 
 {% block content %}
+<div class="flex-grow-1">
 <div class="container mt-2">
     <!-- 遍历所有的文件夹 -->
     {% for folder in folders %}
@@ -114,6 +115,7 @@
     </div>
     {% endif %}
     {% endfor %}
+</div>
 </div>
 {% endblock content %}
 
