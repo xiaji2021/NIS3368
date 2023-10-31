@@ -39,8 +39,23 @@
     border-radius: 5px; /* 圆角边框 */
 }
 .registration-button:hover {
-    background-color: #ffffff; /* 鼠标悬停时的背景颜色 */
+    background-color: rgba(0,0,0,.15); /* 鼠标悬停时的背景颜色 */
 }
+<style>
+  /* 默认链接样式 */
+  .nav-link {
+    background-color: white; /* 默认背景颜色 */
+    color: #000000; /* 默认文本颜色 */
+    transition: background-color 0.3s; /* 平滑过渡 */
+  }
+
+  /* 鼠标悬停时的链接样式 */
+  .nav-link:hover {
+    background-color: #007bff; /* 悬停时的背景颜色 */
+    color: #ffffff; /* 悬停时的文本颜色 */
+  }
+</style>
+
   </style>
 </head>
 <body>
@@ -79,7 +94,7 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="#" class="nav-link active" aria-current="page">
+        <a href="#" class="nav-link link-dark" aria-current="page">
           <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
           主页
         </a>
