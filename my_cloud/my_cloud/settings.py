@@ -167,3 +167,5 @@ CAPTCHA_FONT_SIZE = 48
 CAPTCHA_LETTER_ROTATION = (-10, 10)
 CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
 
+
+

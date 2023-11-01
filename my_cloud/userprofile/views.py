@@ -9,6 +9,13 @@ from django.contrib.auth.decorators import login_required
 from captcha.models import CaptchaStore
 from .forms import ChangePasswordForm
 
+from django.shortcuts import redirect
+
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
+from .forms import UserLoginForm  # 导入你的登录表单
+
 def user_login(request):
     if request.method == 'POST':
         user_login_form = UserLoginForm(data=request.POST)
@@ -16,33 +23,24 @@ def user_login(request):
             # .cleaned_data 清洗出合法数据
             data = user_login_form.cleaned_data
 
-            # 验证验证码
-            captcha_id = request.POST.get('captcha_0', '')
-            captcha_value = request.POST.get('captcha_1', '')
-            try:
-                captcha_id = int(captcha_id)
-            except ValueError:
-                return HttpResponse("验证码不正确，请重新输入.")
-            
-            if CaptchaStore.objects.filter(id=captcha_id, response=captcha_value).exists():
-                # 验证通过，执行账号密码验证
-                user = authenticate(username=data['username'], password=data['password'])
-                if user:
-                    # 验证通过，执行登录
-                    login(request, user)
-                    return redirect("myfiles:file_list")
-                else:
-                    return HttpResponse("账号或密码输入有误。请重新输入~")
+            # 执行账号密码验证
+            user = authenticate(username=data['username'], password=data['password'])
+            if user:
+                # 验证通过，执行登录
+                login(request, user)
+                return redirect("myfiles:file_list")
             else:
-                return HttpResponse("验证码输入有误。请重新输入~")
+                return HttpResponse("帐号密码错误，请重新输入～")
         else:
-            return HttpResponse("账号或密码输入不合法")
+            return HttpResponse("验证码有误，请重新输入~")
     elif request.method == 'GET':
         user_login_form = UserLoginForm()
-        context = { 'form': user_login_form }
+        context = {'form': user_login_form}
         return render(request, 'userprofile/login.html', context)
     else:
         return HttpResponse("请使用GET或POST请求数据")
+
+
 
     
 # 用户退出
@@ -108,3 +106,8 @@ def change_password(request):
     else:
         form = ChangePasswordForm()
     return render(request, 'userprofile/change_password.html', {'form': form})
+
+from django.shortcuts import redirect
+
+def index(request):
+    return redirect('userprofile:login')
