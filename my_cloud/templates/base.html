@@ -47,12 +47,14 @@
     {% include 'header.html' %}
         <div class="d-flex" id="wrapper">
         {% include 'sidebar.html' %}  <!-- 在这里引入侧边栏 -->
-        <div class="vertical-separator"></div>
-        <div id="page-content-wrapper">
-            <div class="container-fluid">
-                {% block content %}{% endblock content %}
-            </div>
-        </div>
+{#        <div class="vertical-separator"></div>#}
+{#        <div id="page-content-wrapper">#}
+{#            <div class="container-fluid">#}
+{##}
+{#            </div>#}
+{#        </div>#}
+        <div style="margin-left: 20px;"></div>
+            {% block content %}{% endblock content %}
     </div>
     {% include 'footer.html' %}
 
