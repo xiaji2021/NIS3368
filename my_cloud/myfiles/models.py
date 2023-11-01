@@ -5,13 +5,15 @@ from django.core.files.storage import default_storage
 class Folder(models.Model):
     name = models.CharField(max_length=255)
     parent_folder = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name="父文件夹", related_name='child_folders')
-    # parent_id = models.CharField(max_length=20, default=None, null=True, blank=True,verbose_name='父文件夹ID')
+    parent_id = models.IntegerField(default=None, null=True, blank=True, verbose_name='父文件夹ID')
 
     # child_folder = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE, verbose_name="子文件夹", related_name='parent_folders')
     # child_id = models.CharField(max_length=20, default=None,null=True, blank=True, verbose_name='子父文件夹ID')
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
+    delete_time = models.DateTimeField(null=True, blank=True,  verbose_name='Delete time')
+
 
     class Meta:
         ordering = ('-update_time',)
@@ -19,18 +21,27 @@ class Folder(models.Model):
     def __str__(self):
         return self.name
     
+class Recycled(models.Model):
+    Recycled = Folder(name = 'Recycled')
+
+    def __str__(self):
+        return self.Recycled.name
+    
 
 class FileUpload(models.Model):
     # id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=100)
     content = models.TextField()
     # upload_to参数，用来指定上传上来的文件保存到哪里
-    file = models.FileField(upload_to="%Y%m%d/")   # verbose_name='文件'
+    file = models.FileField(upload_to="media/%Y%m%d/")   # verbose_name='文件'
 
     create_time = models.DateTimeField(auto_now_add=True, verbose_name='Create time')   # 后台 admin 不会显示
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
+    delete_time = models.DateTimeField(null=True, blank=True,  verbose_name='Delete time')
 
     parent_folder = models.ForeignKey(Folder, null=True, blank=True, on_delete=models.CASCADE, verbose_name = '父文件夹')
+    parent_id = models.IntegerField(default=None, null=True, blank=True, verbose_name='父文件夹ID')
+
 
     # id = models.CharField(max_length=20, default=None, primary_key=True, verbose_name='文件ID')
     # name = models.CharField(max_length=50, default=None, verbose_name='文件名')

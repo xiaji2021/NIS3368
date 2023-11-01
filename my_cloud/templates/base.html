@@ -31,21 +31,32 @@
         }
 
         #sidebar-wrapper .list-group-item:hover {
-            background-color: #007bff;
+            background-color: #000000;
             color: white;
         }
+        .vertical-separator {
+    border-left: 1px solid #9b9b9b; /* 设置分割线的颜色和宽度 */
+    height: 80vh; /* 设置分割线的高度，与主体内容高度一致 */
+    margin-left: 0px; /* 设置分割线与边栏的间距，根据边栏的宽度调整 */
+}
     </style>
 </head>
 
 <body>
 
     {% include 'header.html' %}
-    <div class="d-flex" id="wrapper">
-        {% include 'sidebar.html' %} <!-- 在这里引入侧边栏 -->
-
-        {% block content %}{% endblock content %}
-
-        {% include 'footer.html' %}
+        <div class="d-flex" id="wrapper">
+        {% include 'sidebar.html' %}  <!-- 在这里引入侧边栏 -->
+{#        <div class="vertical-separator"></div>#}
+{#        <div id="page-content-wrapper">#}
+{#            <div class="container-fluid">#}
+{##}
+{#            </div>#}
+{#        </div>#}
+        <div style="margin-left: 20px;"></div>
+            {% block content %}{% endblock content %}
+    </div>
+    {% include 'footer.html' %}
 
 
         <script src="{% static 'jquery/jquery_3.4.1_jquery.js' %}"></script>

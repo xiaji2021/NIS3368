@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'myfiles',
     "userprofile",
     'password_reset',
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -161,3 +162,10 @@ DEFAULT_FROM_EMAIL = '1132717741@qq.com'
 
 # 设置站点
 SITE_ID = 2
+
+CAPTCHA_FONT_SIZE = 48
+CAPTCHA_LETTER_ROTATION = (-10, 10)
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+
+
+

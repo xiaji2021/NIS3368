@@ -2,12 +2,13 @@
 from django import forms
 # 引入 User 模型
 from django.contrib.auth.models import User
+from captcha.fields import CaptchaField
 
 # 登录表单，继承了 forms.Form 类
 class UserLoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField()
-
+    captcha = CaptchaField(label="验证码")
 # 注册用户表单
 class UserRegisterForm(forms.ModelForm):
     # 复写 User 的密码
@@ -25,3 +26,8 @@ class UserRegisterForm(forms.ModelForm):
             return data.get('password')
         else:
             raise forms.ValidationError("密码输入不一致,请重试。")
+        
+class ChangePasswordForm(forms.Form):
+    username = forms.CharField()
+    old_password = forms.CharField(widget=forms.PasswordInput)
+    new_password = forms.CharField(widget=forms.PasswordInput)

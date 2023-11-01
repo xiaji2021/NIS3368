@@ -21,6 +21,8 @@ from myfiles.views import file_list
 
 from django.conf import settings
 from django.conf.urls.static import static
+from userprofile.views import index
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +30,8 @@ urlpatterns = [
     path('myfiles/', include('myfiles.urls', namespace='myfiles')),
     path('userprofile/', include('userprofile.urls', namespace='userprofile')),
     path('password-reset/', include('password_reset.urls')),
+    path('captcha/', include('captcha.urls')),
+    path('', index, name='index')
 ]
 
 # urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
