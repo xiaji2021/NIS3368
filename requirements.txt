@@ -1,1 +1,5 @@
 django==3.2
+django-storages
+django-password-reset
+boto3
+django-simple-captcha
