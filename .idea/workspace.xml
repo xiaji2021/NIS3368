@@ -5,12 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d59b46ea-2e5e-42c0-935e-912635f8430b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/my_cloud/myfiles/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/my_cloud/myfiles/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_cloud/templates/sidebar.html" beforeDir="false" afterPath="$PROJECT_DIR$/my_cloud/templates/sidebar.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_cloud/templates/userprofile/change_password.html" beforeDir="false" afterPath="$PROJECT_DIR$/my_cloud/templates/userprofile/change_password.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_cloud/templates/userprofile/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/my_cloud/templates/userprofile/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/my_cloud/templates/userprofile/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/my_cloud/templates/userprofile/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +67,7 @@
       <workItem from="1698754103411" duration="1871000" />
       <workItem from="1698756645757" duration="2987000" />
       <workItem from="1698829053777" duration="5336000" />
-      <workItem from="1698890522029" duration="17430000" />
+      <workItem from="1698890522029" duration="17814000" />
     </task>
     <servers />
   </component>
