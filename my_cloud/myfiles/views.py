@@ -2,24 +2,27 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, Http404, FileResponse
 from .forms import FileUploadForm, FolderForm
 from .models import FileUpload, Folder, Recycled
-from django.db.models import Q  
+from django.db.models import Q
 import os
 # from ..my_cloud.settings import settings
 from datetime import datetime, timedelta
 from pathlib import Path
 from django.core.files.storage import default_storage
-
-#避免编码混乱
+from django.contrib.auth.decorators import login_required
+# 避免编码混乱
 from urllib.parse import quote
 
+
+@login_required(login_url='/userprofile/login/')
 def hello(request):
     return HttpResponse("Hello World!")
 
+
+@login_required(login_url='/userprofile/login/')
 def upload_file(request, id=None):
-    
     if request.method == "POST":
         file_upload_form = FileUploadForm(request.POST, request.FILES)
-    
+
         if file_upload_form.is_valid():
             new_file = file_upload_form.save(commit=False)
 
@@ -27,23 +30,23 @@ def upload_file(request, id=None):
                 new_file.parent_folder = Folder.objects.get(pk=id)
                 new_file.parent_id = id
 
-                same_name_file = FileUpload.objects.filter(Q(title=new_file.title) & Q(parent_id = new_file.parent_id))
+                same_name_file = FileUpload.objects.filter(Q(title=new_file.title) & Q(parent_id=new_file.parent_id))
                 if same_name_file:
                     error_message = "该文件已存在"
                     return render(request, "error/printError.html", {'error_message': error_message})
 
-
                 if not new_file.parent_folder:
-                        error_message = "指定的父文件夹不存在!"
-                        return render(request, "error/printError.html", {'error_message': error_message})
-                
+                    error_message = "指定的父文件夹不存在!"
+                    return render(request, "error/printError.html", {'error_message': error_message})
+
                 new_file.save()
                 folder = Folder.objects.get(id=id)
-                context = { 'folder':folder }
+                context = {'folder': folder}
                 return redirect("myfiles:folder_detail", id=id)
-            
+
             else:
-                same_name_file = FileUpload.objects.filter(Q(title=new_file.title) & Q(parent_folder = None)  & ~Q(parent_id = -1))
+                same_name_file = FileUpload.objects.filter(
+                    Q(title=new_file.title) & Q(parent_folder=None) & ~Q(parent_id=-1))
                 if same_name_file:
                     error_message = "该文件title已存在"
                     return render(request, "error/printError.html", {'error_message': error_message})
@@ -51,29 +54,33 @@ def upload_file(request, id=None):
                 new_file.parent_id = 0
                 new_file.parent_folder = None
                 new_file.save()
-                return redirect("myfiles:file_list")       
-        
+                return redirect("myfiles:file_list")
+
         else:
             error_message = "表单内容有误，请重新填写!"
             return render(request, "error/printError.html", {'error_message': error_message})
             # return HttpResponse("表单内容有误, 请重新填写")
             # return render(request, "myfiles/upload.html", {'file_upload_form': file_upload_form})
-    
+
     elif request.method == "GET":
         file_upload_form = FileUploadForm()
-        context = { 'file_upload_form': file_upload_form }
+        context = {'file_upload_form': file_upload_form}
         return render(request, "myfiles/upload.html", context)
-    
+
     else:
         error_message = "非GET, POST请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
         # return HttpResponse("非GET, POST请求")
 
+
+@login_required(login_url='/userprofile/login/')
 def handle_uploaded_file(f):
     with open("media/%Y%m%d/", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
+
+@login_required(login_url='/userprofile/login/')
 def file_list(request):
     files = FileUpload.objects.all()
     folders = Folder.objects.all()
@@ -81,17 +88,20 @@ def file_list(request):
     for file in files:
         file.file_extension = '.' + file.file.name.split('.')[-1]
 
-    context = { 'folders': folders, 'files': files }    # 字典
+    context = {'folders': folders, 'files': files}  # 字典
     return render(request, 'myfiles/list.html', context)
 
+
+@login_required(login_url='/userprofile/login/')
 def file_detail(request, id):
     file = FileUpload.objects.get(id=id)
 
-    context = { 'file': file }
+    context = {'file': file}
 
     file.file_extension = '.' + file.file.name.split('.')[-1]
-    
+
     return render(request, 'myfiles/detail.html', context)
+
 
 # def file_delete_old(request, id):
 #     if request.method == "POST":
@@ -119,6 +129,7 @@ def file_detail(request, id):
 
 
 # 更新删除文件函数
+@login_required(login_url='/userprofile/login/')
 def file_delete_old(request, id):
     if request.method == "POST":
         file = FileUpload.objects.get(id=id)
@@ -136,13 +147,14 @@ def file_delete_old(request, id):
         return render(request, "error/printError.html", {'error_message': error_message})
 
 
+@login_required(login_url='/userprofile/login/')
 def file_delete(request, id):
     if request.method == "POST":
         file = FileUpload.objects.get(id=id)
         parent = file.parent_folder
         file.parent_id = -1
         # file.parent_folder = None
-        
+
         current_time = datetime.now()
         file.delete_time = current_time + timedelta(days=30)
 
@@ -157,16 +169,18 @@ def file_delete(request, id):
         return render(request, "error/printError.html", {'error_message': error_message})
         # return HttpResponse("仅允许post请求")
 
-def file_recover(request, id): 
+
+@login_required(login_url='/userprofile/login/')
+def file_recover(request, id):
     if request.method == "POST":
         file = FileUpload.objects.get(id=id)
         parent = file.parent_folder
-        
+
         if file.parent_folder is not None:
             file.parent_id = parent.id
         else:
             file.parent_id = 0
-        
+
         file.delete_time = None
 
         file.save()
@@ -176,7 +190,9 @@ def file_recover(request, id):
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-    
+
+
+@login_required(login_url='/userprofile/login/')
 def file_update(request, id):
     file = FileUpload.objects.get(id=id)
 
@@ -198,20 +214,24 @@ def file_update(request, id):
             error_message = "表单内容有误，请重新填写!"
             return render(request, "error/printError.html", {'error_message': error_message})
             # return HttpResponse("表单内容有误，请重新填写。")
-        
+
     else:
         file_post_form = FileUploadForm()
         context = {'file': file, 'file_post_form': file_post_form}
 
         return render(request, 'myfiles/update.html', context)
-    
+
+
+@login_required(login_url='/userprofile/login/')
 def error(request):
     return render(request, 'error/printError.html')
 
+
+@login_required(login_url='/userprofile/login/')
 def create_folder(request, id=None):
     if request.method == "POST":
         folder_form = FolderForm(request.POST)
-    
+
         if folder_form.is_valid():
             new_folder = folder_form.save(commit=False)
 
@@ -219,7 +239,7 @@ def create_folder(request, id=None):
                 new_folder.parent_folder = Folder.objects.get(pk=id)
                 new_folder.parent_id = id
 
-                same_name_folder = Folder.objects.filter(Q(name=new_folder.name) & Q(parent_id = new_folder.parent_id))
+                same_name_folder = Folder.objects.filter(Q(name=new_folder.name) & Q(parent_id=new_folder.parent_id))
                 if same_name_folder:
                     error_message = "该文件夹已存在"
                     return render(request, "error/printError.html", {'error_message': error_message})
@@ -227,13 +247,14 @@ def create_folder(request, id=None):
                 if not new_folder.parent_folder:
                     error_message = "指定的父文件夹不存在!"
                     return render(request, "error/printError.html", {'error_message': error_message})
-                
+
             else:
-                same_name_folder = Folder.objects.filter(Q(name=new_folder.name) & Q(parent_folder = None) & ~Q(parent_id = -1))
+                same_name_folder = Folder.objects.filter(
+                    Q(name=new_folder.name) & Q(parent_folder=None) & ~Q(parent_id=-1))
                 if same_name_folder:
                     error_message = "该文件夹已存在"
                     return render(request, "error/printError.html", {'error_message': error_message})
-                                
+
                 new_folder.parent_id = 0
                 new_folder.parent_folder = None
 
@@ -243,20 +264,22 @@ def create_folder(request, id=None):
                 return redirect("myfiles:folder_detail", id=id)
             else:
                 return redirect("myfiles:file_list")
-        
+
         else:
             error_message = "表单内容有误，请重新填写!"
             return render(request, "error/printError.html", {'error_message': error_message})
-    
+
     elif request.method == "GET":
         folder_form = FolderForm()
-        context = { 'folder_form': folder_form }
+        context = {'folder_form': folder_form}
         return render(request, "myfiles/createFolder.html", context)
-    
+
     else:
         error_message = "非GET, POST请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-    
+
+
+@login_required(login_url='/userprofile/login/')
 def folder_detail(request, id):
     folder = Folder.objects.get(id=id)
     children_folder = Folder.objects.filter(parent_folder_id=folder.id)
@@ -265,9 +288,11 @@ def folder_detail(request, id):
     for file in children_file:
         file.file_extension = '.' + file.file.name.split('.')[-1]
 
-    context = { 'folder': folder, 'children_folder':children_folder, 'children_file':children_file }
+    context = {'folder': folder, 'children_folder': children_folder, 'children_file': children_file}
     return render(request, 'myfiles/folderDetail.html', context)
 
+
+@login_required(login_url='/userprofile/login/')
 def folder_delete(request, id):
     if request.method == "POST":
         folder = Folder.objects.get(id=id)
@@ -286,11 +311,12 @@ def folder_delete(request, id):
             return redirect("myfiles:folder_detail", id=parent.id)
         else:
             return redirect("myfiles:file_list")
-            
+
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-        
+
+
 # def folder_delete_old(request, id):
 #     if request.method == "POST":
 #         folder = Folder.objects.get(id=id)
@@ -314,6 +340,7 @@ def folder_delete(request, id):
 #         error_message = "仅允许post请求!"
 #         return render(request, "error/printError.html", {'error_message': error_message})
 #
+@login_required(login_url='/userprofile/login/')
 def delete_folder_and_contents(folder):
     # 删除文件夹中的所有文件
     files_in_folder = FileUpload.objects.filter(parent_folder=folder)
@@ -330,6 +357,7 @@ def delete_folder_and_contents(folder):
     folder.delete()
 
 
+@login_required(login_url='/userprofile/login/')
 def folder_delete_old(request, id):
     if request.method == "POST":
         folder = Folder.objects.get(id=id)
@@ -344,6 +372,7 @@ def folder_delete_old(request, id):
         return render(request, "error/printError.html", {'error_message': error_message})
 
 
+@login_required(login_url='/userprofile/login/')
 def folder_recover(request, id):
     if request.method == "POST":
         folder = Folder.objects.get(id=id)
@@ -353,7 +382,7 @@ def folder_recover(request, id):
             folder.parent_id = parent.id
         else:
             folder.parent_id = 0
-        
+
         folder.delete_time = None
 
         folder.save()
@@ -362,7 +391,9 @@ def folder_recover(request, id):
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-    
+
+
+@login_required(login_url='/userprofile/login/')
 def folder_update(request, id):
     folder = Folder.objects.get(id=id)
 
@@ -387,13 +418,14 @@ def folder_update(request, id):
         else:
             error_message = "表单内容有误，请重新填写!"
             return render(request, "error/printError.html", {'error_message': error_message})
-        
+
     else:
         folder_post_form = FolderForm()
         context = {'folder': folder, 'folder_post_form': folder_post_form}
 
         return render(request, 'myfiles/folderUpdate.html', context)
-    
+
+
 # def file_download(request, id):
 #     file = FileUpload.objects.get(id=id)
 #
@@ -411,7 +443,7 @@ def folder_update(request, id):
 
 
 # 新的download函数
-
+@login_required(login_url='/userprofile/login/')
 def file_download(request, id):
     file_obj = FileUpload.objects.get(id=id)
 
@@ -426,8 +458,7 @@ def file_download(request, id):
     return response
 
 
-
-
+@login_required(login_url='/userprofile/login/')
 def recycled_detail(request):
     recycled = Recycled.Recycled
     children_folder = Folder.objects.filter(parent_id=-1)
@@ -436,9 +467,11 @@ def recycled_detail(request):
     for file in children_file:
         file.file_extension = '.' + file.file.name.split('.')[-1]
 
-    context = { 'recycled': recycled, 'children_folder':children_folder, 'children_file':children_file }
+    context = {'recycled': recycled, 'children_folder': children_folder, 'children_file': children_file}
     return render(request, 'myfiles/recycledDetail.html', context)
 
+
+@login_required(login_url='/userprofile/login/')
 def recycled_purge(request):
     if request.method == "POST":
 
@@ -457,7 +490,7 @@ def recycled_purge(request):
 
                 file.delete()
             folder.delete()
-        
+
         for file in children_file:
             BASE_DIR = Path(__file__).resolve().parent.parent
             fname = os.path.join(BASE_DIR, 'media', str(file.file.name))
@@ -467,11 +500,13 @@ def recycled_purge(request):
             file.delete()
 
         return redirect("myfiles:recycled_detail")
-    
+
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-    
+
+
+@login_required(login_url='/userprofile/login/')
 def recycled_recover(request):
     if request.method == "POST":
 
@@ -483,7 +518,7 @@ def recycled_recover(request):
             if folder.parent_folder is not None:
                 folder.parent_id = folder.parent_folder.id
             else:
-                folder.parent_id = 0 
+                folder.parent_id = 0
 
             folder.delete_time = None
             folder.save()
@@ -493,12 +528,12 @@ def recycled_recover(request):
                 file.parent_id = file.parent_folder.id
             else:
                 file.parent_id = 0
-            
+
             file.delete_time = None
             file.save()
 
         return redirect("myfiles:recycled_detail")
-    
+
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
