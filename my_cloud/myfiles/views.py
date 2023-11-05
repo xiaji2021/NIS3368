@@ -8,15 +8,19 @@ import os
 from datetime import datetime, timedelta
 from pathlib import Path
 from django.core.files.storage import default_storage
+# 引入验证登录的装饰器
 from django.contrib.auth.decorators import login_required
-# 避免编码混乱
+
+#避免编码混乱
 from urllib.parse import quote
 
+from userprofile.forms import UserLoginForm
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import user_passes_test
 
 @login_required(login_url='/userprofile/login/')
 def hello(request):
     return HttpResponse("Hello World!")
-
 
 @login_required(login_url='/userprofile/login/')
 def upload_file(request, id=None):
@@ -25,6 +29,9 @@ def upload_file(request, id=None):
 
         if file_upload_form.is_valid():
             new_file = file_upload_form.save(commit=False)
+            # new_file.user = UserLoginForm.username
+            username = request.user.username
+            new_file.user = username 
 
             if id is not None:
                 new_file.parent_folder = Folder.objects.get(pk=id)
@@ -72,25 +79,23 @@ def upload_file(request, id=None):
         return render(request, "error/printError.html", {'error_message': error_message})
         # return HttpResponse("非GET, POST请求")
 
-
 @login_required(login_url='/userprofile/login/')
 def handle_uploaded_file(f):
     with open("media/%Y%m%d/", "wb+") as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
-
 @login_required(login_url='/userprofile/login/')
 def file_list(request):
     files = FileUpload.objects.all()
     folders = Folder.objects.all()
+    username = request.user.username
 
     for file in files:
         file.file_extension = '.' + file.file.name.split('.')[-1]
 
-    context = {'folders': folders, 'files': files}  # 字典
+    context = {'folders': folders, 'files': files, 'username': username }  # 字典
     return render(request, 'myfiles/list.html', context)
-
 
 @login_required(login_url='/userprofile/login/')
 def file_detail(request, id):
@@ -127,7 +132,6 @@ def file_detail(request, id):
 #         return render(request, "error/printError.html", {'error_message': error_message})
 #         # return HttpResponse("仅允许post请求")
 
-
 # 更新删除文件函数
 @login_required(login_url='/userprofile/login/')
 def file_delete_old(request, id):
@@ -145,7 +149,6 @@ def file_delete_old(request, id):
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-
 
 @login_required(login_url='/userprofile/login/')
 def file_delete(request, id):
@@ -226,14 +229,19 @@ def file_update(request, id):
 def error(request):
     return render(request, 'error/printError.html')
 
-
 @login_required(login_url='/userprofile/login/')
 def create_folder(request, id=None):
     if request.method == "POST":
         folder_form = FolderForm(request.POST)
+        user_login_form = UserLoginForm(request.POST)
 
         if folder_form.is_valid():
             new_folder = folder_form.save(commit=False)
+
+            # new_folder.user = User.username
+            username = request.user.username
+            # user = User.objects.get(username="username")
+            new_folder.user = username 
 
             if id is not None:
                 new_folder.parent_folder = Folder.objects.get(pk=id)
@@ -291,7 +299,6 @@ def folder_detail(request, id):
     context = {'folder': folder, 'children_folder': children_folder, 'children_file': children_file}
     return render(request, 'myfiles/folderDetail.html', context)
 
-
 @login_required(login_url='/userprofile/login/')
 def folder_delete(request, id):
     if request.method == "POST":
@@ -340,7 +347,9 @@ def folder_delete(request, id):
 #         error_message = "仅允许post请求!"
 #         return render(request, "error/printError.html", {'error_message': error_message})
 #
-@login_required(login_url='/userprofile/login/')
+
+# 内层函数无需再检查一遍
+# @login_required(login_url='/userprofile/login/')
 def delete_folder_and_contents(folder):
     # 删除文件夹中的所有文件
     files_in_folder = FileUpload.objects.filter(parent_folder=folder)
@@ -356,8 +365,8 @@ def delete_folder_and_contents(folder):
     # 删除文件夹本身
     folder.delete()
 
-
 @login_required(login_url='/userprofile/login/')
+# @user_passes_test(lambda user: user.is_authenticated, login_url='/userprofile/login/')
 def folder_delete_old(request, id):
     if request.method == "POST":
         folder = Folder.objects.get(id=id)
@@ -370,7 +379,6 @@ def folder_delete_old(request, id):
     else:
         error_message = "仅允许post请求!"
         return render(request, "error/printError.html", {'error_message': error_message})
-
 
 @login_required(login_url='/userprofile/login/')
 def folder_recover(request, id):
@@ -463,13 +471,13 @@ def recycled_detail(request):
     recycled = Recycled.Recycled
     children_folder = Folder.objects.filter(parent_id=-1)
     children_file = FileUpload.objects.filter(parent_id=-1)
+    username = request.user.username
 
     for file in children_file:
         file.file_extension = '.' + file.file.name.split('.')[-1]
 
-    context = {'recycled': recycled, 'children_folder': children_folder, 'children_file': children_file}
+    context = {'recycled': recycled, 'children_folder': children_folder, 'children_file': children_file, 'username': username }
     return render(request, 'myfiles/recycledDetail.html', context)
-
 
 @login_required(login_url='/userprofile/login/')
 def recycled_purge(request):

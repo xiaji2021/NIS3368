@@ -48,6 +48,7 @@
 
     <!-- 文件夹 -->
     {% for folder in children_folder %}
+    {%if folder.user == username %}
     <div class="row mb-2 border rounded">
         <div class="col-sm-3 py-2">
             <h5><a href="{% url 'myfiles:folder_detail' folder.id %}">{{ folder.name }}</a></h5>
@@ -75,11 +76,12 @@
             <button type="submit">发送</button>
         </form>
     </div>
-
+    {% endif %}
     {% endfor %}
 
     <!-- 文件 -->
     {% for file in children_file %}
+    {% if file.user == username %}
     <div class="row mb-2 border rounded">
         <div class="col-sm-3 py-2">
             <a href='{% url "myfiles:file_detail" file.id %}'>
@@ -112,6 +114,7 @@
             </form>
         </div>
     </div>
+    {% endif %}
     {% endfor %}
 </div>
 

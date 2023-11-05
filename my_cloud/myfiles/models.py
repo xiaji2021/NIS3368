@@ -14,13 +14,15 @@ class Folder(models.Model):
     update_time = models.DateTimeField(auto_now=True, verbose_name='Update time')
     delete_time = models.DateTimeField(null=True, blank=True,  verbose_name='Delete time')
 
+    user = models.CharField(max_length=255, default='default')
 
     class Meta:
         ordering = ('-update_time',)
 
     def __str__(self):
         return self.name
-    
+
+# 实际上没用到    
 class Recycled(models.Model):
     Recycled = Folder(name = 'Recycled')
 
@@ -41,6 +43,8 @@ class FileUpload(models.Model):
 
     parent_folder = models.ForeignKey(Folder, null=True, blank=True, on_delete=models.CASCADE, verbose_name = '父文件夹')
     parent_id = models.IntegerField(default=None, null=True, blank=True, verbose_name='父文件夹ID')
+
+    user = models.CharField(max_length=255, default='default')
 
 
     # id = models.CharField(max_length=20, default=None, primary_key=True, verbose_name='文件ID')
