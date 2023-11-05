@@ -16,9 +16,9 @@ COPY . /app
 # 配置环境变量等
 ENV DJANGO_SETTINGS_MODULE=my_cloud.settings
 
-RUN rm db.sqlite3
-RUN python3 manage.py makemigrations
-RUN python3 manage.py migrate
+RUN rm ./my_cloud/db.sqlite3
+RUN python3 ./my_cloud/manage.py makemigrations
+RUN python3 ./my_cloud/manage.py migrate
 
 # 运行 Django 项目
 CMD ["python3", "./my_cloud/manage.py", "runserver", "0.0.0.0:8000"]
