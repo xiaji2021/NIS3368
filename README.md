@@ -140,3 +140,31 @@ nohup python3 manage.py runserver 0.0.0.0:8000
 
 
 
+# *optional
+
+如果你想要fork该云盘源代码，独立开发，可以安装如下办法打包成docker
+
+##### 1. 在有dockfile的目录下，运行：
+
+```
+docker build -t <your_image_name>:<tag> .
+```
+
+##### 2. 加tag
+
+```
+docker tag <your_image_name>:<tag> <your_dockerhub_username>/<your_hub_image_name>:<tag>
+```
+
+##### 3.推送到远程
+
+```
+docker push <your_dockerhub_username>/<your_hub_image_name>:<tag>
+```
+
+注意先要注册个人dockerhub账号，并在本地`docker login`
+
+
+
+
+
