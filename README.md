@@ -17,6 +17,8 @@
 
 - 在华为云版本中，采用docker远程拉取部署，并利用nginx反向代理实现域名访问，配置ssl证书实现加密访问 https://cloud.jixia.online
 
+  *注：华为云版本中使用了django了ssl设置，因此如果没有配置ssl将无法正常跳转，无法通过ip+端口访问
+
 
 
 # 部署
